@@ -38,6 +38,7 @@ mysql_select_db("sitdl");
 $status=$_POST['status'];
 $bulan=$_POST['bulan'];
 $pdivisi=$_POST['pdivisi'];
+$tahun_rawat=$_POST['tahun'];
 function generatebulan($tgl)
 {
 
@@ -103,6 +104,7 @@ $sql=mysql_query(
     b.tipe_perawatan_id,
     a.`tgl_perawatan` AS tgl_perawatan,
 	a.namapc,
+	b.tanggal_perawatan,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik Pc dan Laptop' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi OS' THEN 'true' END) AS item2,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Apps' THEN 'true' END) AS item3,
@@ -114,10 +116,13 @@ $sql=mysql_query(
 FROM 
     pcaktif a
 LEFT JOIN 
-    perawatan b ON a.idpc = b.idpc
+    
+
+	(select * from perawatan where YEAR(tanggal_perawatan) = '".$tahun_rawat."'  ) AS b ON a.idpc = b.idpc
+
 LEFT JOIN  
  	tipe_perawatan_item d ON b.`tipe_perawatan_item_id` = d.`id`
-where (a.bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (a.divisi LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '')
+where (a.bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (a.divisi LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') 
 GROUP BY 
     a.idpc, a.user, b.tipe_perawatan_id");
 $count=mysql_num_rows($sql);
@@ -126,7 +131,7 @@ for($i=0;$i<$count;$i++);{
 while ($database = mysql_fetch_array($sql)) {
 //$nomor=$database['nomor'];
 //$periode=$database['periode'];
-$tgl_realisasi=$database['tgl_perawatan'];
+$tgl_perawatan=$database['tgl_perawatan'];
 // $ip=$database['ip'];
 // $nama=$database['nama_perangkat'];
 // $os=$database['osp'];
@@ -154,6 +159,7 @@ $item4 = $database['item4'];
 $item5 = $database['item5'];
 $item6 = $database['item6'];
 $item7 = $database['item7'];
+$tanggal_realisasi = $database['tanggal_perawatan'];
 $bagianbesar = strtoupper($bagian);
 
 $b=mysql_query("select * from bulan where id_bulan='".$bulan."'");
@@ -162,7 +168,7 @@ while($dat=mysql_fetch_array($b)){
 	$bulanbesar=strtoupper($namabulan);
 }
 
-$tgl_jadwal = date('Y-m-d', strtotime('+1 year', strtotime( $tgl_realisasi )));
+$tgl_jadwal = date('Y-m-d', strtotime('+1 year', strtotime( $tgl_perawatan )));
 
 if ($tgl_jadwal == '1971-01-01')
 	$tgl_jadwal2 = '-';
@@ -176,7 +182,7 @@ if($idpc != '' || $idpc != null)
 	$id = $ippc;
 }
 $data = array(
-	array($no++, $bagianbesar, $tgl_jadwal2, '', $id, $namapc.'/'.$user, $item1, $item2, $item3, $item4, $item5, $item6, $item7, '', '', ''),
+	array($no++, $bagianbesar, $tgl_jadwal2, $tanggal_realisasi, $id, $namapc.'/'.$user, $item1, $item2, $item3, $item4, $item5, $item6, $item7, '', '', ''),
 	  //array(1, 'Bagian A', '2024-01-01', '1', 'DAL.GMT/KOM.08/0214', 'PC_A/John Doe', '0', '1', '0', 'yes', '', 'no', '', '', '1'),
     // array(2, 'Bagian B', '2024-01-02', '0', 'DAL.GMT/KOM.08/0215', 'PC_B/Jane Doe', '1', '0', '1', 'no', '', 'yes', '', '', '0')
     // Tambahkan baris lain jika diperlukan
