@@ -235,6 +235,15 @@ echo "</tr></table>";
 			               
 				 </div>	
 <div class="form-group">
+<b>Kategori</b>                                  
+       <select class="form-control" name="svc_kat" >
+ <option  ></option>
+ <option value="LOW">LOW</option>
+ <option value="NORMAL">NORMAL</option>
+ <option value="HIGH">HIGH</option>
+ <option value="URGENT">URGENT</option>
+</select>	
+<b>Tindakan</b>		
                                            
                                          <textarea cols="45" rows="5" name="tindakan" class="form-control" id="tindakan" placeholder="Tindakan Dalam Supporting" size="15px" placeholder="" ></textarea>                              
       

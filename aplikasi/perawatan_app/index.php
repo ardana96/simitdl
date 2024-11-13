@@ -111,24 +111,50 @@
             <br>
             <div class="panel-body">
                 <div class="table-responsive" style='overflow: scroll;'>
-            <!-- Tabel Laporan -->
-                        <table class="table table-bordered table-hover" id="data">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>User</th>
-                                    <th>Lokasi</th>
-                                    <th>Aksi</th>
-                                    <th>Perangkat</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableData">
+
+                    <table class="table table-bordered table-hover" id="data">
+                        <thead>
+                            <tr>
+                           
+                                <th>Sudah Dirawat</th>
+                                <th>Belum Selesai</th>
+                                <th>Belum Dirawat</th>
+                                <th>Total</th>
+                                <th>Progress %</th>
                                 
-                            </tbody>
-                        </table>
-                    </div>
+                                
+                               
+                                
+                            </tr>
+                        </thead>
+                        <tbody id="tableInfo">
+                            
+                        </tbody>
+                    </table>
+
+            <!-- Tabel Laporan -->
+                    <table class="table table-bordered table-hover" id="data">
+                        <thead>
+                            <tr>
+                            <th>Aksi</th>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Lokasi</th>
+                                
+                                
+                                <th>PIC</th>
+                                <th>Ketrangan</th>
+                                <th>Perangkat</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody id="tableData">
+                            
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
     </div>
 
  
@@ -159,10 +185,21 @@
                         <label for="editOrderDate">Lokasi</label>
                         <input type="text" class="form-control" name="lokasi" id="lokasi" disabled>
                     </div>
+                    </hr>
                     <div class="form-group">
-                        <label for="editOrderDate">Jenis Perawatan</label>
+                        <label for="editOrderDate">Jenis Perawatan</label><br>
+                        <label><input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)" unchecked> Pilih Semua</label><br>
                     </div>
-                    <div id="modalCheckboxes"></div>
+                    <div id="modalCheckboxes">
+                        
+
+
+                    </div>
+                                            </hr>
+                    <div class= "form-group">
+                    <b>Keterangan</b>									  
+                    <textarea cols="45" rows="5" name="keterangan" class="form-control" id="keterangan" placeholder="keterangan" size="15px" placeholder="" ></textarea>    
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -235,8 +272,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
     <script>
-        // Fungsi untuk menampilkan data di modal Detail
 
+
+        function toggleCheckboxes(source) {
+                // Dapatkan semua checkbox di dalam form
+                const checkboxes = document.querySelectorAll("input[type='checkbox'][name='selected_items[]']");
+                
+                // Loop untuk mencentang atau menghapus centang dari semua checkbox
+                checkboxes.forEach((checkbox) => {
+                    checkbox.checked = source.checked; // Sesuaikan semua checkbox sesuai status "Pilih Semua"
+                });
+            }
+        // Fungsi untuk menampilkan data di modal Detail
+        
         function loadData() {
             // Dapatkan nilai dari input pencarian
             const bulan = document.querySelector("[name='bulan']").value;
@@ -255,7 +303,27 @@
                     perangkat: perangkat
                 },
                 success: function(response) {
+                    console.log(response);
                     $('#tableData').html(response); // Menampilkan data di tabel
+                },
+                error: function() {
+                    alert('Gagal memuat data.');
+                }
+            });
+
+            // AJAX untuk memuat data dari search_orders.php
+            $.ajax({
+                url: 'aplikasi/perawatan_app/hitungperawatan.php',
+                type: 'GET',
+                data: {
+                    bulan: bulan,
+                    tahun: tahun,
+                    namadivisi: namadivisi,
+                    perangkat: perangkat
+                },
+                success: function(response) {
+                    console.log(response);
+                    $('#tableInfo').html(response); // Menampilkan data di tabel
                 },
                 error: function() {
                     alert('Gagal memuat data.');
@@ -303,6 +371,7 @@
             document.getElementById("idpc").value = data.idpc;
             document.getElementById("user").value = data.user;
             document.getElementById("lokasi").value = data.lokasi;
+            document.getElementById("keterangan").value = data.keterangan;
             document.getElementById("perangkatId").value = perangkatValue;
             document.getElementById("tahunModal").value = tahunValue;
             console.log(data.idpc);
@@ -335,6 +404,7 @@
                 const idpc = document.getElementById("idpc").value;
                 const user = document.getElementById("user").value;
                 const lokasi = document.getElementById("lokasi").value;
+                const keterangan = document.getElementById("keterangan").value;
                 const tipe_perawatan_id = document.getElementById("perangkatId").value;
                 const tahun = document.getElementById("tahun").value;
                 console.log(selectedItems);
@@ -350,6 +420,7 @@
                             lokasi: lokasi,
                             tipe_perawatan_id :tipe_perawatan_id,
                             tahun:tahun,
+                            keterangan:keterangan,
                             selected_items: selectedItems,
                             unselected_items : unselectedItems
                         },
@@ -358,6 +429,7 @@
                             //alert('Data berhasil disimpan!');
                             $('#editModal').modal('hide');// Tutup modal setelah menyimpan
                             loadData() ; 
+                            //refresh();
                         },
                         error: function() {
                             alert('Gagal menyimpan data.');
@@ -366,6 +438,10 @@
                 // } else {
                 //     alert("Pilih minimal satu jenis perawatan.");
                 // }
+        }
+
+        function refresh() {
+            location.reload(); // Merefresh halaman
         }
 
     </script>

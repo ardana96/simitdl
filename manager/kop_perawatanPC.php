@@ -9,36 +9,85 @@ class PDF extends FPDF
 // }
 
 
-function RowWithCheck($data, $checkIndex = array())
-{
-	 // Lebar sel default
+// function RowWithCheck($data, $checkIndex = array())
+// {
+// 	 // Lebar sel default
 
-	$columnWidths = $this->widths; 
-	$cellHeight = 10; // Tinggi sel default
+// 	$columnWidths = $this->widths; 
+// 	$cellHeight = 10; // Tinggi sel default
 	
-	foreach ($data as $i => $col) {
+// 	foreach ($data as $i => $col) {
 
-		// Dapatkan lebar kolom dari array $columnWidths
-        $cellWidth = isset($columnWidths[$i]) ? $columnWidths[$i] : 20; // Gunakan lebar default jika tidak ada
+// 		// Dapatkan lebar kolom dari array $columnWidths
+//         $cellWidth = isset($columnWidths[$i]) ? $columnWidths[$i] : 20; // Gunakan lebar default jika tidak ada
 
-		// Jika kolom ini perlu gambar ceklis, tampilkan gambar
-		if (in_array($i, $checkIndex)) {
-			$this->Cell($cellWidth, $cellHeight, '', 1, 0); // Buat sel kosong dengan border
-			$x = $this->GetX() - $cellWidth; // Posisi X awal dari sel ceklis
-			$y = $this->GetY(); // Posisi Y dari sel ceklis
+// 		// Jika kolom ini perlu gambar ceklis, tampilkan gambar
+// 		if (in_array($i, $checkIndex)) {
+// 			$this->Cell($cellWidth, $cellHeight, '', 1, 0); // Buat sel kosong dengan border
+// 			$x = $this->GetX() - $cellWidth; // Posisi X awal dari sel ceklis
+// 			$y = $this->GetY(); // Posisi Y dari sel ceklis
 
-			// // Tampilkan gambar ceklis di dalam sel
-			// $this->Image('check.png', $x + 5, $y + 2, 5, 5); // Atur posisi dan ukuran gambar ceklis
+// 			// // Tampilkan gambar ceklis di dalam sel
+// 			// $this->Image('check.png', $x + 5, $y + 2, 5, 5); // Atur posisi dan ukuran gambar ceklis
 
-			// Tampilkan gambar ceklis di dalam sel
-            $this->Image('check.png', $x + ($cellWidth / 2) - 2.5, $y + 2, 5, 5); // Atur posisi dan ukuran gambar ceklis
-		} else {
-			// Jika tidak, tampilkan data seperti biasa
-			$this->Cell($cellWidth, $cellHeight, $col, 1, 0, 'C');
-		}
-	}
-	$this->Ln();
-}
+// 			// Tampilkan gambar ceklis di dalam sel
+//             $this->Image('check.png', $x + ($cellWidth / 2) - 2.5, $y + 2, 5, 5); // Atur posisi dan ukuran gambar ceklis
+// 		} else {
+// 			// Jika tidak, tampilkan data seperti biasa
+// 			$this->Cell($cellWidth, $cellHeight, $col, 1, 0, 'C');
+// 		}
+// 	}
+// 	$this->Ln();
+// }
+
+// function RowWithCheck($data, $checkIndex = array())
+// {
+//     $columnWidths = $this->widths; 
+//     $cellHeight = 10; // Tinggi sel default
+
+//     $maxHeight = $cellHeight; // Menyimpan tinggi maksimum dari baris
+    
+//     // Loop pertama untuk menghitung tinggi maksimum baris
+//     foreach ($data as $i => $col) {
+//         $cellWidth = isset($columnWidths[$i]) ? $columnWidths[$i] : 20;
+
+//         if (in_array($i, $checkIndex)) {
+//             // Jika ada gambar ceklis, gunakan tinggi cell biasa
+//             $height = $cellHeight;
+//         } else {
+//             // Menghitung tinggi teks menggunakan MultiCell (simulasi)
+//             $this->SetXY($this->GetX(), $this->GetY()); // Tetap di posisi saat ini
+//             $height = $this->NbLines($cellWidth, $col) * $cellHeight;
+//         }
+
+//         // Menyimpan tinggi maksimum
+//         if ($height > $maxHeight) {
+//             $maxHeight = $height;
+//         }
+//     }
+
+//     // Loop kedua untuk mencetak setiap cell
+//     foreach ($data as $i => $col) {
+//         $cellWidth = isset($columnWidths[$i]) ? $columnWidths[$i] : 20;
+
+//         // Jika kolom ini memerlukan gambar ceklis
+//         if (in_array($i, $checkIndex)) {
+//             $this->Cell($cellWidth, $maxHeight, '', 1, 0); // Sel kosong dengan border
+//             $x = $this->GetX() - $cellWidth;
+//             $y = $this->GetY();
+//             $this->Image('check.png', $x + ($cellWidth / 2) - 2.5, $y + 2, 5, 5);
+//         } else {
+//             // Tampilkan teks dengan MultiCell agar membungkus
+//             $x = $this->GetX();
+//             $y = $this->GetY();
+//             $this->MultiCell($cellWidth, $cellHeight, $col, 1, 'C');
+//             $this->SetXY($x + $cellWidth, $y); // Pindah ke kolom berikutnya
+//         }
+//     }
+
+//     // Baris baru setelah mencetak semua kolom
+//     $this->Ln($maxHeight);
+// }
 function Header()
 	{
 // $this->setFont('Arial','',8,'C');
@@ -221,55 +270,102 @@ function CheckPageBreak($h)
 		$this->AddPage($this->CurOrientation);
 }
 
-function NbLines($w,$txt)
+function RowWithCheck($data, $checkValue = '1')
 {
-	//Computes the number of lines a MultiCell of width w will take
-	$cw=&$this->CurrentFont['cw'];
-	if($w==0)
-		$w=$this->w-$this->rMargin-$this->x;
-	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
-	$s=str_replace("\r",'',$txt);
-	$nb=strlen($s);
-	if($nb>0 and $s[$nb-1]=="\n")
-		$nb--;
-	$sep=-1;
-	$i=0;
-	$j=0;
-	$l=0;
-	$nl=1;
-	while($i<$nb)
-	{
-		$c=$s[$i];
-		if($c=="\n")
-		{
-			$i++;
-			$sep=-1;
-			$j=$i;
-			$l=0;
-			$nl++;
-			continue;
-		}
-		if($c==' ')
-			$sep=$i;
-		$l+=$cw[$c];
-		if($l>$wmax)
-		{
-			if($sep==-1)
-			{
-				if($i==$j)
-					$i++;
-			}
-			else
-				$i=$sep+1;
-			$sep=-1;
-			$j=$i;
-			$l=0;
-			$nl++;
-		}
-		else
-			$i++;
-	}
-	return $nl;
+    $columnWidths = $this->widths; 
+    $cellHeight = 5; // Tinggi dasar per baris teks
+    $maxHeight = $cellHeight;
+	for($i=0;$i<count($data);$i++)
+		$nb=max($nb,$this->NbLines($this->widths[$i],$data[$i]));
+	$h=5*$nb;
+	$this->CheckPageBreak($h);
+    // Loop pertama untuk menghitung tinggi maksimum dari semua sel dalam baris
+    // foreach ($data as $i => $col) {
+    //     $cellWidth = isset($columnWidths[$i]) ? $columnWidths[$i] : 20;
+
+    //     if (in_array($i, $checkIndex)) {
+    //         $height = $cellHeight; // Gambar ceklis tidak membutuhkan lebih dari satu baris
+    //     } else {
+    //         // Menghitung tinggi teks dengan menggunakan MultiCell secara simulasi
+    //         $height = $this->NbLines($cellWidth, $col) * $cellHeight;
+    //     }
+
+    //     // Menyimpan tinggi maksimum untuk baris
+    //     if ($height > $maxHeight) {
+    //         $maxHeight = $height;
+    //     }
+    // }
+
+    // Loop kedua untuk mencetak setiap cell dengan tinggi maksimum
+    foreach ($data as $i => $col) {
+        $cellWidth = isset($columnWidths[$i]) ? $columnWidths[$i] : 20;
+
+		$w=$this->widths[$i];
+		$a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'L';
+
+        // Jika kolom ini memerlukan gambar ceklis
+        if ($col == $checkValue) {
+            $this->Cell($cellWidth, $h, '', 1, 0); // Sel kosong dengan border
+            $x = $this->GetX() - $cellWidth;
+            $y = $this->GetY();
+            $this->Image('check.png', $x + ($w / 2) - 2.5, $y + ($h / 2) - 2.5, 5, 5);
+        } else {
+            // Menggunakan MultiCell untuk teks, memastikan teks menyesuaikan tinggi sel
+            $x = $this->GetX();
+            $y = $this->GetY();
+			$this->Rect($x,$y,$w,$h);	
+			//Print the text
+			$this->MultiCell($w,5,$data[$i],0,$a);
+            $this->SetXY($x + $cellWidth, $y); // Kembali ke posisi X yang benar setelah MultiCell
+        }
+    }
+	
+    // Baris baru setelah mencetak semua kolom
+    $this->Ln($h);
 }
+
+// Fungsi untuk menghitung jumlah baris yang dibutuhkan oleh teks dalam sel
+function NbLines($w, $txt)
+{
+    $cw = &$this->CurrentFont['cw'];
+    if ($w == 0) {
+        $w = $this->w - $this->rMargin - $this->x;
+    }
+    $wmax = ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
+    $s = str_replace("\r", '', $txt);
+    $nb = strlen($s);
+    if ($nb > 0 && $s[$nb - 1] == "\n") {
+        $nb--;
+    }
+    $sep = -1;
+    $i = 0;
+    $j = 0;
+    $l = 0;
+    $nl = 1;
+    while ($i < $nb) {
+        $c = $s[$i];
+        if ($c == ' ') {
+            $sep = $i;
+        }
+        $l += $cw[$c];
+        if ($l > $wmax) {
+            if ($sep == -1) {
+                if ($i == $j) {
+                    $i++;
+                }
+            } else {
+                $i = $sep + 1;
+            }
+            $sep = -1;
+            $j = $i;
+            $l = 0;
+            $nl++;
+        } else {
+            $i++;
+        }
+    }
+    return $nl;
+}
+
 }
 ?>

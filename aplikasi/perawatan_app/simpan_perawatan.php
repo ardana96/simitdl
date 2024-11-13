@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Koneksi ke database
 $server = "localhost";
 $username = "root";
@@ -17,8 +18,26 @@ $tahun = $_POST['tahun'];
 $selectedItems = $_POST['selected_items']; // Array checkbox yang dicentang
 $unselectedItems = $_POST['unselected_items'];
 $tanggal = date("Y-m-d");
-// Loop melalui setiap item yang dicentang dan simpan ke dalam database
+$treated_by=$_SESSION['user'];
+$keterangan = $_POST['keterangan'];
 
+
+
+//simpan ke tabel ket_perawatan 
+$exist_ket_perawatan = mysql_query("SELECT * FROM ket_perawatan WHERE idpc = '$idpc' AND tahun = '$tahun' AND treated_by = '$treated_by' ");
+$exist_ket_perawatan_count = mysql_num_rows($exist_ket_perawatan);
+
+echo $exist_ket_perawatan_count;
+if($exist_ket_perawatan_count == 0){
+        $query_ket = "INSERT INTO ket_perawatan (idpc, treated_by, ket, tahun ) 
+                VALUES ('$idpc', '$treated_by', '$keterangan', '$tahun')";
+                mysql_query($query_ket, $conn);
+                 
+}else{
+    $query_ket = "UPDATE ket_perawatan SET ket = '$keterangan' WHERE idpc = '$idpc' AND tahun = '$tahun' AND treated_by = '$treated_by' ";
+    mysql_query($query_ket, $conn);
+    
+}
 //add perawatan
 if(count($selectedItems ) >0 ){
     foreach ($selectedItems as $itemId) {
@@ -31,6 +50,8 @@ if(count($selectedItems ) >0 ){
             $query = "INSERT INTO perawatan (idpc, tipe_perawatan_id, tipe_perawatan_item_id, tanggal_perawatan ) 
                 VALUES ('$idpc', '$tipe_perawatan_id', '$itemId', '$tanggal')";
                 
+        }else{
+            continue;
         }
         
         mysql_query($query, $conn);
@@ -57,6 +78,8 @@ if(count($unselectedItems ) >0 ){
             // Hapus data berdasarkan ID yang ditemukan
             $querydelete = "DELETE FROM perawatan WHERE id = '$idperawatan'";
             mysql_query($querydelete, $conn);
+        }else{
+            continue;
         }
         // if($exist_count == 0){
         //     $querydelete = "DELETE FROM perawatan WHERE id = '$idperawatan'  ";

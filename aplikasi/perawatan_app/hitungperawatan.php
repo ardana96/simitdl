@@ -112,43 +112,36 @@ $result = mysql_query($query, $conn);
 
 $output = "";
 if (mysql_num_rows($result) > 0) {
+    $sudah = 0;
+    $sedang =0;
+    $belum = 0;
     while ($row = mysql_fetch_assoc($result)) {
        
         if ($row['hitung'] ==  $jumlahperawatan ) {
-            $output .= "<tr style='background-color:#d4edda;'>";
+            $sudah++;
         } else if ($row['hitung'] < $jumlahperawatan && $row['hitung'] > 0  ){
-            $output .= "<tr style='background-color:#FFFF00;'>";
+            $sedang++;
+        } else {
+            $belum++;
         } 
-        else {
-            $output .= "<tr>";
-        }
-
-        //$output .= "<tr style='background-color:#d4edda;'>";
-        if($_SESSION['user'] != $row['treated_by'] && $row['treated_by'] != null   ){
-
-            $output .= "<td>
-                        
-                        <button type='button' class='btn btn-warning' onclick='showEdit(" . json_encode($row) . ")' disabled>Rawat</button>
-                    </td>";
-            
-        }else{
-            $output .= "<td>
-                        
-                        <button type='button' class='btn btn-warning' onclick='showEdit(" . json_encode($row) . ")'>Rawat</button>
-                    </td>";
-        }
-        $output .= "<td>" . $row['idpc'] . "</td>";
-        $output .= "<td>" . $row['user'] . "</td>";
-        $output .= "<td>" . $row['lokasi'] . "</td>";
         
-        
-        $output .= "<td>" . $row['treated_by'] . "</td>";
-        $output .= "<td>" . $row['keterangan'] . "</td>";
-        $output .= "<td>" . strtoupper($row['perangkat']) . "</td>";
-        $output .= "</tr>";
     }
+    $total = mysql_num_rows($result);
+    $progress = $sudah/$total * 100;
+        $output .= "<tr>";
+        $output .= "<td>" . $sudah . "</td>";
+        $output .= "<td>" . $sedang . "</td>";
+        $output .= "<td>" . $belum . "</td>";
+        $output .= "<td>" . $total  . "</td>";
+        if($progress < 50){
+            $output .= "<td style='background-color:#FE6868;'>" . round($progress, 2). " % </td>";
+        }else if($progress >= 50){
+            $output .= "<td style='background-color:#59F2ED;'>" . round($progress, 2). " % </td>";
+        }
+        $output .= "</tr>";
+
 } else {
-    $output .= "<tr><td colspan='7'>Tidak ada data ditemukan.</td></tr>";
+    $output .= "<tr><td colspan='3'>Tidak ada data ditemukan.</td></tr>";
 }
 
 echo $output;
