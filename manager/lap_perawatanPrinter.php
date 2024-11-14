@@ -96,7 +96,7 @@ $pdf->Header1($bulanGen);
 //$sql=mysql_query("Select * from printer where (bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (status LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') order by nomor ");
 //$sql=mysql_query("Select * from pcaktif2  where  divisi='".$pdivisi."'order by nomor ");
 $sql=mysql_query("SELECT 
-    a.id_perangkat AS idpc,
+    a.id_perangkat,
     a.user AS user,
     a.status AS bagian,
     b.tipe_perawatan_id,
@@ -119,7 +119,7 @@ LEFT JOIN
 LEFT JOIN  
  	tipe_perawatan_item d ON b.`tipe_perawatan_item_id` = d.`id`
 
-
+WHERE (a.bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (a.status LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') 
 GROUP BY 
     a.id_perangkat, a.user, b.tipe_perawatan_id
 

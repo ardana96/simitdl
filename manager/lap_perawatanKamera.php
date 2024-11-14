@@ -37,6 +37,7 @@ mysql_select_db("sitdl");
 $status=$_POST['status'];
 $bulan=$_POST['bulan'];
 $pdivisi=$_POST['pdivisi'];
+$tahun_rawat=$_POST['tahun'];
 function generatebulan($tgl)
 {
 
@@ -92,15 +93,51 @@ $pdf->Header1($bulanGen);
 
 
 //mengambil data dari tabel
-$sql=mysql_query("Select * from peripheral where (bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (divisi LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') and tipe = 'kamera'  order by nomor ");
+//$sql=mysql_query("Select * from peripheral where (bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (divisi LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') and tipe = 'kamera'  order by nomor ");
 //$sql=mysql_query("Select * from pcaktif2  where  divisi='".$pdivisi."'order by nomor ");
+$sql=mysql_query("SELECT 
+    
+    a.id_perangkat ,
+    a.user,
+    a.divisi AS bagian,
+    b.tipe_perawatan_id,
+    a.`tgl_perawatan` AS tgl_perawatan,
+	a.lokasi,
+	a.perangkat,
+	
+	b.tanggal_perawatan,
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Kamera' THEN 'true' END) AS item1,
+    MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Kejelasan Kamera' THEN 'true' END) AS item2,
+    MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi View Kamera Dilihat dari Monitor/Online' THEN 'true' END) AS item3
+
+FROM 
+    peripheral a
+LEFT JOIN 
+    
+
+	(SELECT * FROM perawatan WHERE YEAR(tanggal_perawatan) = '".$tahun_rawat."'  ) AS b ON a.id_perangkat = b.idpc
+
+LEFT JOIN  
+ 	tipe_perawatan_item d ON b.`tipe_perawatan_item_id` = d.`id`
+WHERE LOWER(a.tipe) = 'kamera' 
+AND
+(a.bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (a.divisi LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') 
+
+
+
+GROUP BY 
+    a.id_perangkat, a.user, b.tipe_perawatan_id
+
+
+
+");
 $count=mysql_num_rows($sql);
 $no=1;
 for($i=0;$i<$count;$i++);{
 while ($database = mysql_fetch_array($sql)) {
 $nomor=$database['nomor'];
 $tgl_perawatan=$database['tgl_perawatan'];
-
+$tanggal_realisasi = $database['tanggal_perawatan'];
 $user=$database['user'];
 $keterangan=$database['keterangan'];
 
@@ -109,6 +146,9 @@ $lokasi= $database['lokasi'];
 
 $id_perangkat = $database['id_perangkat'];
 $perangkat = $database['perangkat'];
+$item1 = $database['item1'];
+$item2 = $database['item2'];
+$item3 = $database['item3'];
 
 $b=mysql_query("select * from bulan where id_bulan='".$bulan."'");
 while($dat=mysql_fetch_array($b)){
@@ -123,11 +163,22 @@ while($dat=mysql_fetch_array($b)){
 // else 
 // 	$tgl_jadwal2 = $tgl_jadwal;
 
-
+$data = array(
+	//array($no++, $bagianbesar, $tgl_jadwal2, '', $id, $namapc.'/'.$user, $item1, $item2, $item3, $item4, $item5, $item6, $item7, '', '', ''),
+	array($no++, $lokasi,$tgl_perawatan,$tanggal_realisasi ,$id_perangkat,$perangkat.' / '.$user,$item1, $item2, $item3, '','','')
+	//array($no++, $lokasi,$tgl_perawatan,'',$id_perangkat,$perangkat.' / '.$user,'','','','','','')
+	
+	
+	// Tambahkan baris lain jika diperlukan
+);
+foreach ($data as $row) {
+    // Angka dalam array menunjukkan indeks kolom yang akan menampilkan gambar ceklis
+    $pdf->RowWithCheck($row, 'true'); // Kolom ke-4, ke-7, dan ke-11 berisi gambar ceklis
+}
 
 //$pdf->Row(array($no++,$bulanbesar,$tgl_jadwal2,$ippc,$namapc.'/'.$user,$osbesar,$appsbesar,'',$cpubesar,$monitorbesar,$printerbesar,'','',$petugas,$a,$keterangan));
 
-$pdf->Row(array($no++, $lokasi,$tgl_perawatan,'',$id_perangkat,$perangkat.' / '.$user,'','','','','',''));
+//$pdf->Row(array($no++, $lokasi,$tgl_perawatan,'',$id_perangkat,$perangkat.' / '.$user,'','','','','',''));
 }}
 $pdf->Output();
 ?>

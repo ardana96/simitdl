@@ -181,6 +181,45 @@ function CheckPageBreak($h)
 		$this->AddPage($this->CurOrientation);
 }
 
+function RowWithCheck($data, $checkValue = '1')
+{
+    $columnWidths = $this->widths; 
+    $cellHeight = 5; // Tinggi dasar per baris teks
+    $maxHeight = $cellHeight;
+	for($i=0;$i<count($data);$i++)
+		$nb=max($nb,$this->NbLines($this->widths[$i],$data[$i]));
+	$h=5*$nb;
+	$this->CheckPageBreak($h);
+
+
+    // Loop kedua untuk mencetak setiap cell dengan tinggi maksimum
+    foreach ($data as $i => $col) {
+        $cellWidth = isset($columnWidths[$i]) ? $columnWidths[$i] : 20;
+
+		$w=$this->widths[$i];
+		$a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'L';
+
+        // Jika kolom ini memerlukan gambar ceklis
+        if ($col == $checkValue) {
+            $this->Cell($cellWidth, $h, '', 1, 0); // Sel kosong dengan border
+            $x = $this->GetX() - $cellWidth;
+            $y = $this->GetY();
+            $this->Image('check.png', $x + ($w / 2) - 2.5, $y + ($h / 2) - 2.5, 5, 5);
+        } else {
+            // Menggunakan MultiCell untuk teks, memastikan teks menyesuaikan tinggi sel
+            $x = $this->GetX();
+            $y = $this->GetY();
+			$this->Rect($x,$y,$w,$h);	
+			//Print the text
+			$this->MultiCell($w,5,$data[$i],0,$a);
+            $this->SetXY($x + $cellWidth, $y); // Kembali ke posisi X yang benar setelah MultiCell
+        }
+    }
+	
+    // Baris baru setelah mencetak semua kolom
+    $this->Ln($h);
+}
+
 function NbLines($w,$txt)
 {
 	//Computes the number of lines a MultiCell of width w will take

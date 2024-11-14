@@ -39,7 +39,7 @@ font-size:18px bold;
   <td> :</td>
   <td>
                                         
-      <select  name="tahun"  id="tahun">
+      <select  name="tahun"  id="tahun" style="width: 90px;">
           <?php
           for ($i = date('Y'); $i >= 2022; $i--) {
           if($i<10){ $i="0".$i; }
@@ -51,7 +51,7 @@ font-size:18px bold;
 <tr>
  <td>Bulan :</td>
  <td> :</td>
- <td> <select name="bulan" >
+ <td> <select name="bulan" style="width: 90px;">
  <option selected="selected" ></option>
  <option value="01">Januari </option>
  <option value="02">Februari</option>
@@ -71,7 +71,7 @@ font-size:18px bold;
  <td>Divisi :</td>
  <td> :</td>
  <td class="isi_combo">
-	<select  name="pdivisi" id="devisi" >
+	<select  name="pdivisi" id="devisi" style="width: 90px;">
 	 <option selected="selected"></option>
 	 <option value="GARMENT">GARMENT</option>
 	 <option value="TEXTILE">TEXTILE</option>

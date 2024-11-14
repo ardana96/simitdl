@@ -35,9 +35,23 @@ font-size:18px bold;
 <td colspan="3" align="center" class="judul">PERAWATAN ROUTER PDF</td>
 </tr>
 <tr>
+  <td>Tahun :</td>
+  <td> :</td>
+  <td>
+                                        
+      <select  name="tahun"  id="tahun" style="width: 90px;">
+          <?php
+          for ($i = date('Y'); $i >= 2022; $i--) {
+          if($i<10){ $i="0".$i; }
+          echo"<option value=".$i.">".$i."</option>";}
+          ?>    
+      </select>
+  </td>
+</tr>
+<tr>
  <td>Bulan :</td>
  <td> :</td>
- <td> <select name="bulan" >
+ <td> <select name="bulan" style="width: 90px;">
  <option selected="selected" ></option>
  <option value="01">Januari </option>
  <option value="02">Februari</option>
@@ -57,7 +71,7 @@ font-size:18px bold;
  <td>Divisi :</td>
  <td> :</td>
  <td class="isi_combo">
-	<select  name="pdivisi" id="devisi">
+	<select  name="pdivisi" id="devisi" style="width: 90px;">
 	 <option selected="selected"></option>
 	 <option value="GARMENT">GARMENT</option>
 	 <option value="TEXTILE">TEXTILE</option>

@@ -35,6 +35,20 @@ font-size:18px bold;
 <td colspan="3" align="center" class="judul">PERAWATAN PROYEKTOR PDF</td>
 </tr>
 <tr>
+  <td>Tahun :</td>
+  <td> :</td>
+  <td>
+                                        
+      <select  name="tahun"  id="tahun" style="width: 90px;">
+          <?php
+          for ($i = date('Y'); $i >= 2022; $i--) {
+          if($i<10){ $i="0".$i; }
+          echo"<option value=".$i.">".$i."</option>";}
+          ?>    
+      </select>
+  </td>
+</tr>
+<tr>
  <td>Bulan :</td>
  <td> :</td>
  <td> <select name="bulan" >

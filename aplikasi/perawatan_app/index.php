@@ -171,8 +171,8 @@
                 <div class="modal-body">
                     <!-- <p><strong>Perangkat yang Dipilih:</strong> <span id="modalPerangkatValue"></span></p> -->
                     <!-- Div untuk menampilkan hasil query dari get_perawatan_items.php -->
-                    <input type="text" class="form-control" name="perangkatId" id="perangkatId" disabled>
-                    <input type="text" class="form-control" name="tahunModal" id="tahunModal" disabled>
+                    <input type="hidden" class="form-control" name="perangkatId" id="perangkatId" disabled>
+                    <input type="hidden" class="form-control" name="tahunModal" id="tahunModal" disabled>
                     <div class="form-group">
                         <label for="editOrderDate">ID</label>
                         <input type="text" class="form-control" name="idpc" id="idpc" disabled>
