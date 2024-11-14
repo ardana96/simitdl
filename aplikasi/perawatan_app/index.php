@@ -65,6 +65,8 @@
                                         
                                     
                                 </div>
+
+                                
                                 <div class="form-group">
                                     <b> Perangkat Yang Dirawat</b>        
                                     <select class="form-control" name='perangkat' required='required'>	 
@@ -87,6 +89,7 @@
                                     
                                 </div>
                                 <button type="submit" class="btn btn-primary">Cari</button>	
+                                <button type="button" class="btn btn-danger" onclick="prints()">Print</button>
                             </form>
                         </div>
                     </div>
@@ -444,5 +447,112 @@
             location.reload(); // Merefresh halaman
         }
 
+        
+
+        function get_nama_perangkat(callback) {
+            // Dapatkan nilai dari input pencarian
+            
+            const perangkat = document.querySelector("[name='perangkat']").value;
+
+            // AJAX untuk memuat data dari search_orders.php
+            $.ajax({
+                url: 'aplikasi/perawatan_app/get_nama_perangkat.php',
+                type: 'GET',
+                data: {
+                   
+                    perangkat: perangkat
+                },
+                success: function(response) {
+                    callback(response);
+                    
+                    //$('#tableData').html(response); // Menampilkan data di tabel
+                },
+                error: function() {
+                    alert('Gagal memuat data.');
+                }
+            });
+
+            // AJAX untuk memuat data dari search_orders.php
+          
+        }
+
+        
+        
+        function prints()  {
+            // Ambil data form dan konversi menjadi query string
+            //var formData = $('#input_form').serialize();
+
+            const bulan = document.querySelector("[name='bulan']").value;
+            const tahun = document.querySelector("[name='tahun']").value;
+            const namadivisi = document.querySelector("[name='namadivisi']").value;
+            const perangkat = document.querySelector("[name='perangkat']").value;
+
+            
+            // const parameter = `tahun=${tahun}&bulan=${bulan}&pdivisi=${namadivisi}`;
+            // var url = `manager/lap_perawatanPC.php?${parameter}`;
+            // Buat URL dengan data form
+            //var url = 'manager/lap_perawatanPC.php?tahun=2024&bulan=01&pdivisi=GARMENT';
+            //console.log(get_nama_perangkat() );
+            // Buka URL di jendela atau tab baru
+            //window.open(url, '_blank');
+
+            get_nama_perangkat(function(data) {
+                console.log("Data perangkat:", data); // Menampilkan data yang diperoleh dari get_nama_perangkat
+                
+                // Contoh: Menggunakan data dari get_nama_perangkat
+                const parameter = `tahun=${tahun}&bulan=${bulan}&pdivisi=${namadivisi}`;
+                let url = '';
+                
+                switch (data.toLowerCase()) {
+                    case 'pc dan laptop':
+                        url = `manager/lap_perawatanPC.php?`;
+                        break;
+                    case 'printer':
+                        url = `manager/lap_perawatanPrinter.php?`;
+                        break;
+                    case 'scaner':
+                        url = `manager/lap_perawatanScanner.php?`;
+                        break;
+                    case 'switch/router':
+                        url = `manager/lap_perawatanRouter.php?`;
+                        break;
+                    case 'kabel jaringan':
+                        url = `manager/lap_perawatanKabel.php?`;
+                        break;
+                    case 'access point':
+                        url = `manager/lap_perawatanAccessPoint.php?`;
+                        break;
+                    case 'nvr/dvr':
+                        url = `manager/lap_perawatanNVR.php?`;
+                        break;
+                    case 'kamera':
+                        url = `manager/lap_perawatanKamera.php?`;
+                        break;
+                    case 'fingerSpot':
+                        url = `manager/lap_perawatanFingerSpot.php?`;
+                        break;
+                    case 'server':
+                        url = `manager/lap_perawatanServer.php?`;
+                        break;
+                    case 'ups':
+                        url = `manager/lap_perawatanUPS.php?`;
+                        break;
+                    case 'proyektor':
+                        url = `manager/lap_perawatanProyektor.php?`;
+                        break;
+                    // Tambahkan kasus lain jika diperlukan
+                    default:
+                        console.error('Tipe perangkat tidak dikenali');
+                        break;
+                }
+                
+                const mergeUrl = url + parameter;
+                // Buka URL di jendela atau tab baru
+                window.open(mergeUrl, '_blank');
+            });
+        }
+    
+
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </div>

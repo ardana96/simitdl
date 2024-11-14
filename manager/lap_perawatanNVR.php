@@ -35,9 +35,9 @@ mysql_connect("localhost","root","dlris30g");
 mysql_select_db("sitdl");
 
 $status=$_POST['status'];
-$bulan=$_POST['bulan'];
-$pdivisi=$_POST['pdivisi'];
-$tahun_rawat=$_POST['tahun'];
+$bulan=$_POST['bulan'] ? $_POST['bulan'] : $_GET['bulan'];
+$pdivisi=$_POST['pdivisi'] ? $_POST['pdivisi'] : $_GET['pdivisi'];
+$tahun_rawat=$_POST['tahun'] ? $_POST['tahun'] : $_GET['tahun'];
 function generatebulan($tgl)
 {
 
