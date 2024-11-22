@@ -16,7 +16,7 @@ $pemakai=$data['user'];
 $password=$data['password'];
 $akses=$data['akses'];
 
-if($akses=='admin'){	
+if($akses=='admin' || $akses=='super admin'){	
 header('location:../user.php?menu=homeadmin');
 $_SESSION['user']=$pemakai;
 $_SESSION['akses']=$akses;

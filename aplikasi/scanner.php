@@ -174,14 +174,14 @@ function kdauto($tabel, $inisial){
                                             <input class="form-control" type="hidden" name="nomor" value="<? echo kdauto("scaner",""); ?>" readonly>
                                     
                                         </div>
-										 <div class="form-group">
-                                         ID Perangkat
+										<div class="form-group">
+                                         	ID Perangkat
                                             <input class="form-control" type="text" name="id_perangkat" placeholder="ID Perangkat"  >
                                     
                                         </div>
 											
- <div class="form-group">
-                                    Scanner
+										<div class="form-group">
+                                    		Scanner
                                             <input class="form-control" type="text" name="printer" placeholder="ID Perangkat"  >
                                     
                                         </div>

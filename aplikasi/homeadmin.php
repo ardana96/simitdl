@@ -127,20 +127,21 @@
 <div class="row">
   <div class="col-lg-12">
     <ul class="pricing-table dark" >
-
+	<li class="active primary col-lg-4">
 	<h4>PERAWATAN</h4>
 		<div class="price-body">
 			<div class="price">
 				<a href="user.php?menu=perawatanapp" >
-			<img src='img/pc.png' width=150 height=150>
+			<img src='img/perawatan.png' width=150 height=150>
 			</a>
 			</div>
 		</div>
 		<div class="footer">
 			<a href="user.php?menu=perawatanapp" class="btn btn-metis-1 btn-lg btn-rect">PERAWATAN</a>
 		</div>
-	
-	
+	</li>
+	</div>
+</div>	
 	
 </ul>
 <div class="clearfix"></div>

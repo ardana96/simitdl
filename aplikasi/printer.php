@@ -205,7 +205,7 @@ function kdauto($tabel, $inisial){
                                             <input  placeholder="hh-mm-yyyy" class="form-control" type="text" name="tgl_perawatan" >
                                     
                                         </div>
-										 <div class="form-group">
+										<div class="form-group">
 											Bulan Perawatan         
 											<select  class="form-control" name='bulan' >	 <option value=<? echo $id_bulan; ?>><? echo $namabulan; ?> </option>
 												
