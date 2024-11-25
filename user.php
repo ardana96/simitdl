@@ -3,20 +3,16 @@
 //     die("Header sudah dikirim di $file pada baris $line");
 // }
 session_start();
-
-
 // $pathAwal = "C:/xampp/htdocs/simit/backup/backup.sql";
 // $pathTujuan = "D:/backupsimit/backup.sql";
 // copy($pathAwal, $pathTujuan);  
-// ?>
- <?
+ ?>
+<?
 // $pathAwal2 = "C:/xampp/htdocs/simit/backup/backup.sql";
 // $pathTujuan2 = "D:/backupsimit/data/backup.sql";
 // copy($pathAwal2, $pathTujuan2);  
 // ?>
 <?
-// ob_start(); 
-// session_start();
 include('config.php');
 $tgll=date('20y-01-01');
 
@@ -38,7 +34,7 @@ $tgll=date('20y-01-01');
 
 
 ?>
- <?php
+<?php
 // session_start();
 // if(!isset($_SESSION['user'])&&!isset($_SESSION['akses'])){
 // header('location:index.php');}
@@ -48,10 +44,10 @@ $tgll=date('20y-01-01');
 // $tanggal = date("20y-m ");
 // include('config.php');
 // $sql=mysql_query("select * from tuser where user='$status_user'");
-	// if(mysql_num_rows($sql) > 0){
-				// while($data = mysql_fetch_array($sql)){
-	// $file2=$data['file'];
-	// $id_user=$data['id_user'];}}
+// 	if(mysql_num_rows($sql) > 0){
+// 				while($data = mysql_fetch_array($sql)){
+// 	$file2=$data['file'];
+// 	$id_user=$data['id_user'];}}
 ?>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
@@ -107,7 +103,7 @@ $tgll=date('20y-01-01');
                 <header class="navbar-header">
 
               
-                    <img src="assets/img/logo3.png" width=100 height=40 alt=""/>
+                    <img src="assets/img/logo3.png" width=300 height=30 alt=""/>
                 </header>
                 <!-- END LOGO SECTION -->
                 <ul class="nav navbar-top-links navbar-right">
@@ -153,16 +149,18 @@ $tgll=date('20y-01-01');
                     </a>
                     <ul class="collapse" id="component-nav">
                        
-                        <li class=""><a href="user.php?menu=supplier"><i class="icon-angle-right"></i>  Supplier</a></li>
- <li class=""><a href="user.php?menu=kategori"><i class="icon-angle-right"></i>  Kategori</a></li>                        
+						<li class=""><a href="user.php?menu=supplier"><i class="icon-angle-right"></i>  Supplier</a></li>
+						<li class=""><a href="user.php?menu=kategori"><i class="icon-angle-right"></i>  Kategori</a></li>                        
 						<li class=""><a href="user.php?menu=barang"><i class="icon-angle-right"></i>  Barang</a></li>
-						   <li><a href="user.php?menu=printer"><i class="icon-angle-right"></i>  Printer</a></li>
-					      <li><a href="user.php?menu=scanner"><i class="icon-angle-right"></i>  Scanner</a></li>
-						         <li class=""><a href="user.php?menu=bagian"><i class="icon-angle-right"></i>  Bagian (Pengambilan)</a></li>
-                   <li class=""><a href="user.php?menu=bagian_pemakai"><i class="icon-angle-right"></i>  Bagian (Perawatan)</a></li>
-                   <li class=""><a href="user.php?menu=lokasi"><i class="icon-angle-right"></i>  Lokasi</a></li>
-                   <li class=""><a href="user.php?menu=subbagian"><i class="icon-angle-right"></i>  Sub Bagian</a></li>
-                   <li class=""><a href="user.php?menu=peripheral"><i class="icon-angle-right"></i>  Peripheral</a></li>
+						<li><a href="user.php?menu=printer"><i class="icon-angle-right"></i>  Printer</a></li>
+						<li><a href="user.php?menu=scanner"><i class="icon-angle-right"></i>  Scanner</a></li>
+						<li class=""><a href="user.php?menu=divisi"><i class="icon-angle-right"></i> Divisi</a></li>
+						<li class=""><a href="user.php?menu=bagian"><i class="icon-angle-right"></i>  Bagian (Pengambilan)</a></li>
+						<li class=""><a href="user.php?menu=bagian_pemakai"><i class="icon-angle-right"></i>  Bagian (Perawatan)</a></li>
+						<li class=""><a href="user.php?menu=lokasi"><i class="icon-angle-right"></i>  Lokasi</a></li>
+						<li class=""><a href="user.php?menu=subbagian"><i class="icon-angle-right"></i>  Sub Bagian</a></li>
+						<li class=""><a href="user.php?menu=catridge"><i class="icon-angle-right"></i>  Catridge</a></li>
+						<li class=""><a href="user.php?menu=peripheral"><i class="icon-angle-right"></i>  Peripheral</a></li>
                         <li class=""><a href="user.php?menu=perawatan"><i class="icon-angle-right"></i>  Perawatan</a></li>
 				    <!--<li class=""><a href="user.php?menu=stockawalth"><i class="icon-angle-right"></i>  Stock Awal Tahun</a></li>-->
              
@@ -314,7 +312,7 @@ $tgll=date('20y-01-01');
               
                     </ul>
                 </li>
-				            <li class="panel">
+				<li class="panel">
                     <a href="#" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" data-target="#error-nav">
                         <i class="icon-warning-sign"></i>  Pemakai Komputer
 	   
@@ -325,7 +323,7 @@ $tgll=date('20y-01-01');
                     </a>
                     <ul class="collapse" id="error-nav">
                         <li><a href="user.php?menu=rpemakaipc"><i class="icon-angle-right"></i>  Daftar Pemakai PC </a></li>
-						<li><a href="user.php?menu=rpemakaipcV2"><i class="icon-angle-right"></i>  Daftar Pemakai PC 2</a></li>
+						<li><a href="user.php?menu=rpemakaipc2"><i class="icon-angle-right"></i>  Daftar Pemakai PC 2 </a></li>
                         <li><a href="user.php?menu=ipcras"><i class="icon-angle-right"></i>  Daftar IP Sama </a></li>
                      
                     </ul>
@@ -362,18 +360,14 @@ $tgll=date('20y-01-01');
                         <li><a href="#" onclick="popup_print(12)"><i class="icon-angle-right"></i>  Service Dalam</a></li>
                         <li><a href="#" onclick="popup_print(13)"><i class="icon-angle-right"></i>  Service Luar</a></li>
                         <li><a href="#" onclick="popup_print(20)"><i class="icon-angle-right"></i>  Software</a></li>
+        		<!-- <li><a href="#" onclick="popup_print(6)"><i class="icon-angle-right"></i> Peminjaman</a></li>-->
                         <li><a href="#" onclick="popup_print(9)"><i class="icon-angle-right"></i>  Jadwal Perawatan V1</a></li>
 						<li><a href="#" onclick="popup_print(27)"><i class="icon-angle-right"></i>  Jadwal Perawatan V2</a></li>
 						<li class="">
-        		<!-- <li><a href="#" onclick="popup_print(6)"><i class="icon-angle-right"></i> Peminjaman</a></li>-->
-                        <!-- <li><a href="#" onclick="popup_print(9)"><i class="icon-angle-right"></i>  Jadwal Perawatan</a></li>
-						<li><a href="#" onclick="popup_print(26)"><i class="icon-angle-right"></i>  Jadwal Perawatan 2</a></li> -->
-
-                        <!-- <li class="">
 							<a href="#" data-parent="#chart-nav" data-toggle="collapse" class="accordion-toggle" data-target="#lit-nav">
 								<i class="icon-angle-right"></i> <b>Jadwal Perawatan</b>
 							   
-							</a> -->
+							</a>
 						
 						
 							<ul class="collapse" id="lit-nav">
@@ -396,6 +390,7 @@ $tgll=date('20y-01-01');
                         <li><a href="#" onclick="popup_print(10)"><i class="icon-angle-right"></i>  Daftar Pemakai PC</a></li>
                         <li><a href="#" onclick="popup_print(15)"><i class="icon-angle-right"></i>  Printer</a></li>
                         <li><a href="#" onclick="popup_print(19)"><i class="icon-angle-right"></i> Laptop</a></li>
+						<li><a href="#" onclick="popup_print(28)"><i class="icon-angle-right"></i> Laptop V2</a></li>
                         <li><a href="#" onclick="popup_print(16)"><i class="icon-angle-right"></i> Permintaan Barang</a></li>
         	<!--<li class=""><a href="#" onclick="popup_print(7)"><i class="icon-angle-right"></i>  Stock Cetak</a></li>-->
         		        <li class=""><a href="#" onclick="popup_print(17)"><i class="icon-angle-right"></i> Stock Cetak </a></li>
@@ -403,6 +398,7 @@ $tgll=date('20y-01-01');
         						 <li><a href="#" onclick="popup_print(4)"><i class="icon-angle-right"></i>  Kartu Stock</a></li> --> 
                         <li><a href="#" onclick="popup_print(18)"><i class="icon-angle-right"></i>  Kartu Stock </a></li>
                         <li><a href="#" onclick="popup_print(25)"><i class="icon-angle-right"></i>  Laporan Pengeluaran </a></li>
+						<li><a href="#" onclick="popup_print(26)"><i class="icon-angle-right"></i>  Ceklis CTPAT </a></li>
                    
                     </ul>
                 </li>
@@ -497,14 +493,14 @@ $tgll=date('20y-01-01');
                    
                     </ul>
                 </li>-->
+							 
                 <?php if ($_SESSION['akses'] == 'super admin') {  ?> 
                 <li class="panel">
                     <a href="user.php?menu=users">
                         <i class="icon-user"> </i> User
                     </a>
                 </li>
-                <?php } ?>
-							 
+                <?php } ?>		 
 	  <li><a href="aplikasi/login_out.php" onclick="return confirm('Terima Kasih telah menggunakan manual guide ini, Yakin Mau Keluar ?')"><i class="icon-signout"></i> Logout </a>
                             </li>
 
@@ -542,6 +538,7 @@ $tgll=date('20y-01-01');
 if(isset($_GET['menu'])){
 $menu=$_GET['menu'];
 switch($menu){
+case('catridge');include('aplikasi/catridge.php');break; 
 case('supplier');include('aplikasi/supplier.php');break;
 case('tasupplier');include('aplikasi/tasupplier.php');break;
 case('feditsupp');include('aplikasi/feditsupplier.php');break;
@@ -569,11 +566,11 @@ case('keluarpc');include('aplikasi/keluarpc.php');break;
 case('formrakitupdate');include('aplikasi/formrakitupdate.php');break;
 case('rakitupdate');include('aplikasi/rakitupdate.php');break;
 case('rpemakaipc');include('aplikasi/rpemakaipc.php');break;
-case('rpemakaipcV2');include('aplikasi/rpemakaipcV2.php');break;
+case('rpemakaipc2');include('aplikasi/rpemakaipc2.php');break;
 case('fupdate_pemakaipc');include('aplikasi/fupdate_pemakaipc.php');break;
-case('fupdate_pemakaipcV2');include('aplikasi/fupdate_pemakaipcV2.php');break;
+case('fupdate_pemakaipc2');include('aplikasi/fupdate_pemakaipc2.php');break;
 case('fupdate_kerusakanpc');include('aplikasi/fupdate_kerusakanpc.php');break;
-case('fupdate_kerusakanpcV2');include('aplikasi/fupdate_kerusakanpcV2.php');break;
+case('fupdate_kerusakanpc2');include('aplikasi/fupdate_kerusakanpc2.php');break;
 case('ipcras');include('aplikasi/ipcras.php');break;
 case('bagian');include('aplikasi/bagian.php');break;
 case('subbagian');include('aplikasi/subbagian.php');break;
@@ -609,10 +606,12 @@ case('editstockpc');include('aplikasi/editstockpc.php');break;
 case('stockawalth');include('aplikasi/stockawalth.php');break;
 case('barang'); include('aplikasi/barang.php'); break;
 case('peripheral'); include('aplikasi/peripheral.php'); break;
+case('divisi'); include('aplikasi/divisi.php'); break;
 case('perawatan'); include('aplikasi/perawatan/perawatan.php'); break;
 case('perawatanapp'); include('aplikasi/perawatan_app/index.php'); break;
 case('users'); include('aplikasi/user/user.php'); break;
 } }
+
 ?>
 
 
@@ -658,7 +657,7 @@ $date=date('20y-m-d');
 $user_database="root";
 $password_database="dlris30g";
 $server_database="localhost";
-$nama_database="sitag";
+$nama_database="sitdl";
 $koneksi=mysql_connect($server_database,$user_database,$password_database);
 if(!$koneksi){
 die("Tidak bisa terhubung ke server".mysql_error());}
@@ -679,7 +678,7 @@ $isi=mysql_query("insert into tbackup (tgl) values ('$date')");
 	$file='backup.sql';
 	
 	//panggil fungsi dengan memberi parameter untuk koneksi dan nama file untuk backup
-	backup_tables("localhost","root","","sitag",$file);
+	backup_tables("localhost","root","","sitdl",$file);
 
 				
 				}
