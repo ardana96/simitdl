@@ -20,6 +20,7 @@ $unselectedItems = $_POST['unselected_items'];
 $tanggal = date("Y-m-d");
 $treated_by=$_SESSION['user'];
 $keterangan = $_POST['keterangan'];
+$approve_by = $_POST['approve_by'];
 
 
 
@@ -29,12 +30,12 @@ $exist_ket_perawatan_count = mysql_num_rows($exist_ket_perawatan);
 
 echo $exist_ket_perawatan_count;
 if($exist_ket_perawatan_count == 0){
-        $query_ket = "INSERT INTO ket_perawatan (idpc, treated_by, ket, tahun ) 
-                VALUES ('$idpc', '$treated_by', '$keterangan', '$tahun')";
+        $query_ket = "INSERT INTO ket_perawatan (idpc, treated_by, ket, tahun, approve_by ) 
+                VALUES ('$idpc', '$treated_by', '$keterangan', '$tahun', '$approve_by')";
                 mysql_query($query_ket, $conn);
                  
 }else{
-    $query_ket = "UPDATE ket_perawatan SET ket = '$keterangan' WHERE idpc = '$idpc' AND tahun = '$tahun' AND treated_by = '$treated_by' ";
+    $query_ket = "UPDATE ket_perawatan SET ket = '$keterangan', approve_by = '$approve_by' WHERE idpc = '$idpc' AND tahun = '$tahun' AND treated_by = '$treated_by' ";
     mysql_query($query_ket, $conn);
     
 }

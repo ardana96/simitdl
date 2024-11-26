@@ -84,7 +84,7 @@ $this->CELL(25,5,'Tgl','LT',0,'C');
 $this->CELL(37,11,'ID',1,0,'C');
 $this->CELL(55,11,'NAMA PERANGKAT',1,0,'C');
 $this->CELL(30,5,'Kondisi Fisik Kabel ','T',0,'C');
-$this->CELL(30,5,'PARAF',1,0,'C');
+$this->CELL(30,5,'NAMA',1,0,'C');
 $this->CELL(15,11,'KET',1,1,'C');
 $this->setY(42);
 $this->setX(42);

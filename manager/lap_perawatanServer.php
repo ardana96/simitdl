@@ -107,6 +107,8 @@ $sql=mysql_query("SELECT
 	a.perangkat,
 	
 	b.tanggal_perawatan,
+	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat) AS treated_by,
+    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND tahun = $tahun_rawat) AS approve_by,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi OS' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Fisik Server' THEN 'true' END) AS item2,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Apps' THEN 'true' END) AS item3,
@@ -152,7 +154,8 @@ while ($database = mysql_fetch_array($sql)) {
 	$item2 = $database['item2'];
 	$item3 = $database['item3'];
 	$item4 = $database['item4'];
-
+	$treated_by = $database['treated_by'];
+$approve_by = $database['approve_by'];
 $b=mysql_query("select * from bulan where id_bulan='".$bulan."'");
 while($dat=mysql_fetch_array($b)){
 	$namabulan=$dat['bulan'];
@@ -168,7 +171,7 @@ while($dat=mysql_fetch_array($b)){
 
 $data = array(
 	//array($no++, $bagianbesar, $tgl_jadwal2, '', $id, $namapc.'/'.$user, $item1, $item2, $item3, $item4, $item5, $item6, $item7, '', '', ''),
-	array($no++, $lokasi,$tgl_perawatan,$tanggal_realisasi ,$id_perangkat,$perangkat.' / '.$user,$item1, $item2, $item3, $item4, '','','')
+	array($no++, $lokasi,$tgl_perawatan,$tanggal_realisasi ,$id_perangkat,$perangkat.' / '.$user,$item1, $item2, $item3, $item4, $treated_by , $approve_by,'')
 	//array($no++, $lokasi,$tgl_perawatan,'',$id_perangkat,$perangkat.' / '.$user,'','','','','','')
 	
 	

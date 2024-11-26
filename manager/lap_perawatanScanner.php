@@ -106,6 +106,8 @@ $sql=mysql_query("SELECT
 	a.lokasi,
 	a.printer,
 	b.tanggal_perawatan,
+	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat) AS treated_by,
+    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND tahun = $tahun_rawat) AS approve_by,
     MAX(CASE WHEN d.nama_perawatan = 'Kesesuaian Aset' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Fisik Scanner' THEN 'true' END) AS item2,
     MAX(CASE WHEN d.`nama_perawatan` = 'Test Scan' THEN 'true' END) AS item3
@@ -180,7 +182,8 @@ $item1 = $database['item1'];
 $item2 = $database['item2'];
 $item3 = $database['item3'];
 $item4 = $database['item4'];
-
+$treated_by = $database['treated_by'];
+$approve_by = $database['approve_by'];
 $b=mysql_query("select * from bulan where id_bulan='".$bulan."'");
 while($dat=mysql_fetch_array($b)){
 	$namabulan=$dat['bulan'];
@@ -200,7 +203,7 @@ else
 
 $data = array(
 	//array($no++, $bagianbesar, $tgl_jadwal2, '', $id, $namapc.'/'.$user, $item1, $item2, $item3, $item4, $item5, $item6, $item7, '', '', ''),
-	array($no++, $lokasi,$tgl_jadwal2,$tanggal_realisasi ,$id_perangkat,$printer.'/'.$user,$item1, $item2, $item3, '','','')
+	array($no++, $lokasi,$tgl_jadwal2,$tanggal_realisasi ,$id_perangkat,$printer.'/'.$user,$item1, $item2, $item3, $treated_by , $approve_by ,'')
 	
 	// Tambahkan baris lain jika diperlukan
 );

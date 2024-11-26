@@ -85,7 +85,7 @@ $this->CELL(25,8,'Tgl','LT',0,'C');
 $this->CELL(37,17,'ID',1,0,'C');
 $this->CELL(55,17,'Nama Perangkat',1,0,'C');
 $this->CELL(55,5,'Item yang Dicek',1,0,'C');
-$this->CELL(30,5,'Paraf',1,0,'C');
+$this->CELL(30,5,'Nama',1,0,'C');
 $this->CELL(20,17,'Keterangan',1,1,'C');
 $this->setY(45);
 $this->setX(42);

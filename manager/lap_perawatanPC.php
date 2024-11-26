@@ -105,6 +105,8 @@ $sql=mysql_query(
     a.`tgl_perawatan` AS tgl_perawatan,
 	a.namapc,
 	b.tanggal_perawatan,
+	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.idpc AND  tahun = $tahun_rawat) AS treated_by,
+	(SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.idpc AND  tahun = $tahun_rawat) AS approve_by,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik Pc dan Laptop' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi OS' THEN 'true' END) AS item2,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Apps' THEN 'true' END) AS item3,
@@ -159,6 +161,8 @@ $item4 = $database['item4'];
 $item5 = $database['item5'];
 $item6 = $database['item6'];
 $item7 = $database['item7'];
+$treated_by = $database['treated_by'];
+$approve_by = $database['approve_by'];
 $tanggal_realisasi = $database['tanggal_perawatan'];
 $bagianbesar = strtoupper($bagian);
 
@@ -182,7 +186,7 @@ if($idpc != '' || $idpc != null)
 	$id = $ippc;
 }
 $data = array(
-	array($no++, $bagianbesar, $tgl_jadwal2, $tanggal_realisasi, $id, $namapc.'/'.$user, $item1, $item2, $item3, $item4, $item5, $item6, $item7, '', '', ''),
+	array($no++, $bagianbesar, $tgl_jadwal2, $tanggal_realisasi, $id, $namapc.'/'.$user, $item1, $item2, $item3, $item4, $item5, $item6, $item7, $treated_by , $approve_by , ''),
 	  //array(1, 'Bagian A', '2024-01-01', '1', 'DAL.GMT/KOM.08/0214', 'PC_A/John Doe', '0', '1', '0', 'yes', '', 'no', '', '', '1'),
     // array(2, 'Bagian B', '2024-01-02', '0', 'DAL.GMT/KOM.08/0215', 'PC_B/Jane Doe', '1', '0', '1', 'no', '', 'yes', '', '', '0')
     // Tambahkan baris lain jika diperlukan

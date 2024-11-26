@@ -105,6 +105,8 @@ $sql=mysql_query("SELECT
 	a.perangkat,
 	
 	b.tanggal_perawatan,
+	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat) AS treated_by,
+    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND tahun = $tahun_rawat) AS approve_by,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik Kabel Jaringan' THEN 'true' END) AS item1
 FROM 
     peripheral a
@@ -142,7 +144,8 @@ while ($database = mysql_fetch_array($sql)) {
 	$item1 = $database['item1'];
 	$item2 = $database['item2'];
 	$item3 = $database['item3'];
-	
+	$treated_by = $database['treated_by'];
+$approve_by = $database['approve_by'];
 
 $b=mysql_query("select * from bulan where id_bulan='".$bulan."'");
 while($dat=mysql_fetch_array($b)){
@@ -159,7 +162,7 @@ while($dat=mysql_fetch_array($b)){
 
 $data = array(
 	
-	array($no++, $lokasi,$tgl_perawatan,$tanggal_realisasi ,$id_perangkat,$perangkat.' / '.$user,$item1, '','','')
+	array($no++, $lokasi,$tgl_perawatan,$tanggal_realisasi ,$id_perangkat,$perangkat.' / '.$user,$item1, $treated_by , $approve_by ,'')
 	
 );
 foreach ($data as $row) {

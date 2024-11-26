@@ -155,7 +155,7 @@ $this->CELL(20,8,'Tanggal','LT',0,'C');
 $this->CELL(22,17,'ID',1,0,'C');
 $this->CELL(40,17,'Nama Perangkat',1,0,'C');
 $this->CELL(115,5,'Item yang dicek',1,0,'C');
-$this->CELL(30,5,'Paraf',1,0,'C');
+$this->CELL(30,5,'Nama',1,0,'C');
 $this->CELL(15,17,'Keterangan',1,1,'C');
 $this->setY(41);
 $this->setX(32);
