@@ -106,49 +106,49 @@ echo"<option value=".$i.">".$i."</option>";}
 
 
 $sl=mysql_query("select * from tbarang where report='y' order by namabarang ");
-while($datarinci = mysql_fetch_array($sl)){
-$namabarang=$datarinci['namabarang'];
-$idbarang=$datarinci['idbarang'];
+	while($datarinci = mysql_fetch_array($sl)){
+		$namabarang=$datarinci['namabarang'];
+		$idbarang=$datarinci['idbarang'];
 
-$tanggal=$thn_akhir.'-'.$bln_akhir.'-'.$tgll;
-$tanggall=$thn_akhir.'-01-01';
-$tambah=0;
-$kurang=0;
-$sq=mysql_query("select stockawal from tbarang where idbarang='".$idbarang."' ");
-$dat=mysql_fetch_array($sq);
-$stockk=$dat['stockawal'];
+		$tanggal=$thn_akhir.'-'.$bln_akhir.'-'.$tgll;
+		$tanggall=$thn_akhir.'-01-01';
+		$tambah=0;
+		$kurang=0;
+		$sq=mysql_query("select stockawal from tbarang where idbarang='".$idbarang."' ");
+		$dat=mysql_fetch_array($sq);
+		$stockk=$dat['stockawal'];
 
-$a=mysql_query("select sum(jumlah)as jumta from tpembelian,trincipembelian where tpembelian.nofaktur=trincipembelian.nofaktur
-and  idbarang='".$idbarang."' and DATE_FORMAT(tpembelian.tglbeli,'%Y-%m-%d')<='".$tanggal."'");
-while($dataa = mysql_fetch_array($a)){
-$jumm=$dataa['jumta'];
-}
+		$a=mysql_query("select sum(jumlah)as jumta from tpembelian,trincipembelian where tpembelian.nofaktur=trincipembelian.nofaktur
+		and  idbarang='".$idbarang."' and DATE_FORMAT(tpembelian.tglbeli,'%Y-%m-%d')<='".$tanggal."'");
+			while($dataa = mysql_fetch_array($a)){
+				$jumm=$dataa['jumta'];
+			}
 
-$b=mysql_query("select sum(jumlah)as jumta from tpengambilan,trincipengambilan where tpengambilan.nofaktur=trincipengambilan.nofaktur
-and  idbarang='".$idbarang."'  and DATE_FORMAT(tpengambilan.tglambil,'%Y-%m-%d')<='".$tanggal."'");
-while($datab = mysql_fetch_array($b)){
-$jummb=$datab['jumta'];
-}
+		$b=mysql_query("select sum(jumlah)as jumta from tpengambilan,trincipengambilan where tpengambilan.nofaktur=trincipengambilan.nofaktur
+			and  idbarang='".$idbarang."'  and DATE_FORMAT(tpengambilan.tglambil,'%Y-%m-%d')<='".$tanggal."'");
+			while($datab = mysql_fetch_array($b)){
+				$jummb=$datab['jumta'];
+			}
 
-$stockawal=$stockk+$jumm-$jummb;
+		$stockawal=$stockk+$jumm-$jummb;
 
-$squi=mysql_query("select * from tpembelian,trincipembelian where tpembelian.nofaktur=trincipembelian.nofaktur
-and tpembelian.tglbeli like '".$tanggal."%' and trincipembelian.idbarang='$idbarang'  ");
-while($datt = mysql_fetch_array($squi)){
-$nofaktur=$datt['nofaktur'];
-$jumlah=$datt['jumlah'];
-$tambah=$tambah+$jumlah;
-}
+		$squi=mysql_query("select * from tpembelian,trincipembelian where tpembelian.nofaktur=trincipembelian.nofaktur
+				and tpembelian.tglbeli like '".$tanggal."%' and trincipembelian.idbarang='$idbarang'  ");
+		while($datt = mysql_fetch_array($squi)){
+			$nofaktur=$datt['nofaktur'];
+			$jumlah=$datt['jumlah'];
+			$tambah=$tambah+$jumlah;
+		}
 
-$squii=mysql_query("select * from tpengambilan,trincipengambilan where tpengambilan.nofaktur=trincipengambilan.nofaktur
-and tpengambilan.tglambil like '".$tanggal."%' and trincipengambilan.idbarang='$idbarang'  ");
-while($datttt = mysql_fetch_array($squii)){
-$nofaktur=$datttt['nofaktur'];
-$jumlahh=$datttt['jumlah'];
-$kurang=$kurang+$jumlahh;
-}
+		$squii=mysql_query("select * from tpengambilan,trincipengambilan where tpengambilan.nofaktur=trincipengambilan.nofaktur
+				and tpengambilan.tglambil like '".$tanggal."%' and trincipengambilan.idbarang='$idbarang'  ");
+		while($datttt = mysql_fetch_array($squii)){
+			$nofaktur=$datttt['nofaktur'];
+			$jumlahh=$datttt['jumlah'];
+			$kurang=$kurang+$jumlahh;
+		}
 
-$sisa=$stockawal+$tambah-$kurang;
+		$sisa=$stockawal+$tambah-$kurang;
 
 
 

@@ -113,7 +113,7 @@ $sql=mysql_query(
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi AV' THEN 'true' END) AS item4,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Monitor' THEN 'true' END) AS item5,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi CPU' THEN 'true' END) AS item6,
-    MAX(CASE WHEN d.`nama_perawatan` = 'Kepatuhan penggunaan email dan internet' THEN 'true' END) AS item7
+    MAX(CASE WHEN d.`nama_perawatan` = 'Kepatuhan Penggunaan Email dan Internet' THEN 'true' END) AS item7
 
 FROM 
     pcaktif a

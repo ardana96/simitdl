@@ -32,7 +32,7 @@ $idpcc=$_POST['idpcc'];
 $dvd=$_POST['dvd'];
 $teknisi=$_POST['teknisi'];
 $keterangan=$_POST['keterangan'];
-$model = $_POST['model']
+$model = $_POST['model'];
 
 
 $query="INSERT INTO pcaktif2 (nomor,user,divisi,bagian,subbagian,lokasi,idpc,namapc,ippc,os,prosesor,mobo,monitor,ram,harddisk,jumlah,bulan,ram1,ram2,hd1,hd2,powersuply,cassing,dvd) 

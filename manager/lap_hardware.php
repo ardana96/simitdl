@@ -168,7 +168,7 @@ a.tglRequest as tglRequest
  FROM service a
 LEFT JOIN divisi b ON a.divisi = b.`kd`
 LEFT JOIN pcaktif c ON c.ippc = a.ippc 
-WHERE  a.statup='service' AND a.status='Selesai' AND a.ket='D' 
+WHERE  a.statup='service' AND a.status='Selesai' AND a.ket='D' and a.ippc != ''
 and  a.tgl like '%".$tanggal_akhir_format."'
 ORDER BY a.svc_kat, a.tgl ASC");
 $count=mysql_num_rows($sql);

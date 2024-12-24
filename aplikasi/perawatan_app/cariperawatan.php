@@ -56,6 +56,8 @@ if (!empty($_GET['perangkat'])) {
                     printer WHERE 1=1";
     }
     else if(strtolower($tipe)  == 'scaner'){
+
+        
         //$query = "SELECT id_perangkat As idpc, user, lokasi as lokasi FROM scaner where  1=1  ";
         $query = "SELECT id_perangkat AS idpc, user, lokasi AS lokasi, 'scaner' AS perangkat,
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = scaner.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
@@ -68,7 +70,7 @@ if (!empty($_GET['perangkat'])) {
     }
     
     else {
-       
+        
         //$query = "SELECT id_perangkat As idpc, user, lokasi as lokasi FROM peripheral where tipe = '$tipe' and 1=1  ";
         $query = "SELECT id_perangkat AS idpc, user, lokasi AS lokasi, tipe AS perangkat,
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = peripheral.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
