@@ -18,7 +18,8 @@ $tahun = $_POST['tahun'];
 $selectedItems = $_POST['selected_items']; // Array checkbox yang dicentang
 $unselectedItems = $_POST['unselected_items'];
 $tanggal = date("Y-m-d");
-$treated_by=$_SESSION['user'];
+//$treated_by=$_SESSION['user'];
+$treated_by = $_POST['treated_by'];
 $keterangan = $_POST['keterangan'];
 $approve_by = $_POST['approve_by'];
 

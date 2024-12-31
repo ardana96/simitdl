@@ -105,7 +105,7 @@ $sql=mysql_query(
     a.`tgl_perawatan` AS tgl_perawatan,
 	a.namapc,
 	b.tanggal_perawatan,
-	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.idpc AND  tahun = $tahun_rawat LIMIT 1) AS treated_by,
+	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.idpc AND  tahun = $tahun_rawat Order BY id  	 LIMIT 1) AS treated_by,
 	(SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.idpc AND  tahun = $tahun_rawat LIMIT 1) AS approve_by,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik Pc dan Laptop' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi OS' THEN 'true' END) AS item2,

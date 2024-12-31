@@ -37,7 +37,7 @@ if (!empty($_GET['perangkat'])) {
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = pcaktif.idpc AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
                     (SELECT tanggal_perawatan FROM perawatan WHERE perawatan.idpc = pcaktif.idpc AND  YEAR(tanggal_perawatan) = $tahun LIMIT 1) AS tanggal,
                     (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = pcaktif.idpc AND  tahun = $tahun LIMIT 1) AS keterangan,
-                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = pcaktif.idpc AND  tahun = $tahun LIMIT 1) AS treated_by,
+                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = pcaktif.idpc AND  tahun = $tahun Order BY id desc LIMIT 1 ) AS treated_by,
                     (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = pcaktif.idpc AND  tahun = $tahun LIMIT 1) AS approve_by
                     FROM 
                     pcaktif WHERE 1=1";
@@ -50,7 +50,7 @@ if (!empty($_GET['perangkat'])) {
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = printer.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
                     (SELECT tanggal_perawatan FROM perawatan WHERE perawatan.idpc = printer.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun LIMIT 1) AS tanggal,
                     (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat  AND  tahun = $tahun) AS keterangan,
-                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat AND  tahun = $tahun) AS treated_by,
+                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat AND  Order BY id desc tahun = $tahun) AS treated_by,
                     (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat AND tahun = $tahun) AS approve_by
                     FROM 
                     printer WHERE 1=1";
@@ -63,7 +63,7 @@ if (!empty($_GET['perangkat'])) {
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = scaner.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
                     (SELECT tanggal_perawatan FROM perawatan WHERE perawatan.idpc = scaner.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun LIMIT 1) AS tanggal,
                     (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  tahun = $tahun) AS keterangan,
-                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  tahun = $tahun) AS treated_by,
+                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  Order BY id desc tahun = $tahun) AS treated_by,
                     (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  tahun = $tahun) AS approve_by
                     FROM 
                     scaner WHERE 1=1";
@@ -76,7 +76,7 @@ if (!empty($_GET['perangkat'])) {
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = peripheral.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
                     (SELECT tanggal_perawatan FROM perawatan WHERE perawatan.idpc = peripheral.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun LIMIT 1) AS tanggal,
                     (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = peripheral.id_perangkat AND  tahun = $tahun LIMIT 1) AS keterangan,
-                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = peripheral.id_perangkat AND  tahun = $tahun LIMIT 1) AS treated_by,
+                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = peripheral.id_perangkat AND  tahun = $tahun  Order BY id desc LIMIT 1) AS treated_by,
                     (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = peripheral.id_perangkat AND  tahun = $tahun LIMIT 1) AS approve_by
                     FROM 
                     peripheral WHERE tipe = '$tipe' and 1=1 ";

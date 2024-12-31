@@ -104,7 +104,7 @@ $sql=mysql_query("SELECT
 	a.lokasi,
 	a.printer,
 	b.tanggal_perawatan,
-	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat) AS treated_by,
+	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat Order BY id desc) AS treated_by,
     (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND tahun = $tahun_rawat) AS approve_by,
     MAX(CASE WHEN d.nama_perawatan = 'Kesesuaian Aset' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Fisik Printer' THEN 'true' END) AS item2,

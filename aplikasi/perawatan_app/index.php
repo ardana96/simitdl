@@ -1,3 +1,10 @@
+<?php
+session_start();
+
+$staffIT = $_SESSION['user'];
+//$staffIT = null;
+?>
+
 <div class="inner">
     <div class="row">
         <div class="col-lg-12">
@@ -208,6 +215,11 @@
                             <label for="approve_by">Nama User</label>
                             <input type="text" class="form-control" name="approve_by" id="approve_by" required>
                         </div>
+
+                        <div class="form-group">
+                            <label for="approve_by">Staff IT</label>
+                            <input type="text"  class="form-control" name="treated_by" id="treated_by" required readonly value =<?php echo $staffIT ?> >
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -415,7 +427,11 @@
             // Ambil semua checkbox yang dicentang
                 const selectedItems = Array.from(document.querySelectorAll("input[name='selected_items[]']:checked")).map(cb => cb.value);
                 const unselectedItems = Array.from(document.querySelectorAll("input[name='selected_items[]']:not(:checked)")).map(cb => cb.value);
-                
+                const treatedBy = document.getElementById('treated_by').value.trim();
+                    if (!treatedBy) {
+                        alert("Nama Perawat Tidak Ada, Silahkan Login Kembali");
+                        return false; // Prevent form submission
+                    }
                 // Ambil data dari input lainnya
                 const idpc = document.getElementById("idpc").value;
                 const user = document.getElementById("user").value;
@@ -423,6 +439,7 @@
                 const keterangan = document.getElementById("keterangan").value;
                 const tipe_perawatan_id = document.getElementById("perangkatId").value;
                 const approve_by = document.getElementById("approve_by").value;
+                const treated_by = document.getElementById("treated_by").value;
                 const tahun = document.getElementById("tahun").value;
                 console.log(selectedItems);
                 console.log(unselectedItems);
@@ -440,7 +457,8 @@
                             keterangan:keterangan,
                             selected_items: selectedItems,
                             unselected_items : unselectedItems,
-                            approve_by: approve_by
+                            approve_by: approve_by,
+                            treated_by: treated_by
                         },
                         success: function(response) {
                             console.log(response);
