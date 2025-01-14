@@ -49,9 +49,9 @@ if (!empty($_GET['perangkat'])) {
         $query = "SELECT id_perangkat AS idpc, user, lokasi AS lokasi, 'printer' AS perangkat,
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = printer.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
                     (SELECT tanggal_perawatan FROM perawatan WHERE perawatan.idpc = printer.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun LIMIT 1) AS tanggal,
-                    (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat  AND  tahun = $tahun) AS keterangan,
-                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat AND  Order BY id desc tahun = $tahun) AS treated_by,
-                    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat AND tahun = $tahun) AS approve_by
+                    (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat  AND  tahun = $tahun LIMIT 1) AS keterangan,
+                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat AND tahun = $tahun Order BY id desc LIMIT 1) AS treated_by,
+                    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = printer.id_perangkat AND tahun = $tahun LIMIT 1) AS approve_by
                     FROM 
                     printer WHERE 1=1";
     }
@@ -62,9 +62,9 @@ if (!empty($_GET['perangkat'])) {
         $query = "SELECT id_perangkat AS idpc, user, lokasi AS lokasi, 'scaner' AS perangkat,
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = scaner.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
                     (SELECT tanggal_perawatan FROM perawatan WHERE perawatan.idpc = scaner.id_perangkat AND  YEAR(tanggal_perawatan) = $tahun LIMIT 1) AS tanggal,
-                    (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  tahun = $tahun) AS keterangan,
-                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  Order BY id desc tahun = $tahun) AS treated_by,
-                    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  tahun = $tahun) AS approve_by
+                    (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  tahun = $tahun LIMIT 1) AS keterangan,
+                    (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  tahun = $tahun Order BY id desc limit 1) AS treated_by,
+                    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = scaner.id_perangkat AND  tahun = $tahun limit 1) AS approve_by
                     FROM 
                     scaner WHERE 1=1";
     }
@@ -119,30 +119,44 @@ $result = mysql_query($query, $conn);
 $output = "";
 if (mysql_num_rows($result) > 0) {
     while ($row = mysql_fetch_assoc($result)) {
-       
-        if ($row['hitung'] ==  $jumlahperawatan ) {
-            $output .= "<tr style='background-color:#d4edda;'>";
-        } else if ($row['hitung'] < $jumlahperawatan && $row['hitung'] > 0  ){
-            $output .= "<tr style='background-color:#FFFF00;'>";
-        } 
-        else {
-            $output .= "<tr>";
+        if(strtolower($row['perangkat']) == 'switch/router'){
+            if ($row['hitung'] >=2 ) {
+                $output .= "<tr style='background-color:#d4edda;'>";
+            } else if ($row['hitung'] < 2 && $row['hitung'] > 0  ){
+                $output .= "<tr style='background-color:#FFFF00;'>";
+            } 
+            else {
+                $output .= "<tr>";
+            }
+
+        }else{
+            if ($row['hitung'] ==  $jumlahperawatan ) {
+                $output .= "<tr style='background-color:#d4edda;'>";
+            } else if ($row['hitung'] < $jumlahperawatan && $row['hitung'] > 0  ){
+                $output .= "<tr style='background-color:#FFFF00;'>";
+            } 
+            else {
+                $output .= "<tr>";
+            }
+
         }
+       
+        
 
         //$output .= "<tr style='background-color:#d4edda;'>";
-        if($_SESSION['user'] != $row['treated_by'] && $row['treated_by'] != null   ){
+        // if($_SESSION['user'] != $row['treated_by'] && $row['treated_by'] != null   ){
 
-            $output .= "<td>
+        //     $output .= "<td>
                         
-                        <button type='button' class='btn btn-warning' onclick='showEdit(" . json_encode($row) . ")' disabled>Rawat</button>
-                    </td>";
+        //                 <button type='button' class='btn btn-warning' onclick='showEdit(" . json_encode($row) . ")' disabled>Rawat</button>
+        //             </td>";
             
-        }else{
+        // }else{
             $output .= "<td>
                         
                         <button type='button' class='btn btn-warning' onclick='showEdit(" . json_encode($row) . ")'>Rawat</button>
                     </td>";
-        }
+        //}
         $output .= "<td>" . $row['idpc'] . "</td>";
         $output .= "<td>" . $row['user'] . "</td>";
         $output .= "<td>" . $row['lokasi'] . "</td>";

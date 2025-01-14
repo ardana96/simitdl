@@ -327,6 +327,7 @@ function kdauto($tabel, $inisial){
 												 <option value="NVR/DVR" >NVR / DVR</option>
 												 <option value="kamera" >Kamera</option>
 												 <option value="fingerspot" >Fingerspot</option>
+												 <option value="tablet" >Tablet</option>
 											</select>  
                                         </div>
 

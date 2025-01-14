@@ -116,14 +116,28 @@ if (mysql_num_rows($result) > 0) {
     $sedang =0;
     $belum = 0;
     while ($row = mysql_fetch_assoc($result)) {
+
+        if(strtolower($row['perangkat']) == 'switch/router'){
+            if ($row['hitung'] >=  2 ) {
+                $sudah++;
+            } else if ($row['hitung'] < 2 && $row['hitung'] > 0  ){
+                $sedang++;
+            } else {
+                $belum++;
+            } 
+
+        }else{
+            
+            if ($row['hitung'] ==  $jumlahperawatan ) {
+                $sudah++;
+            } else if ($row['hitung'] < $jumlahperawatan && $row['hitung'] > 0  ){
+                $sedang++;
+            } else {
+                $belum++;
+            } 
+
+        }
        
-        if ($row['hitung'] ==  $jumlahperawatan ) {
-            $sudah++;
-        } else if ($row['hitung'] < $jumlahperawatan && $row['hitung'] > 0  ){
-            $sedang++;
-        } else {
-            $belum++;
-        } 
         
     }
     $total = mysql_num_rows($result);

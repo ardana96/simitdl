@@ -106,8 +106,8 @@ $sql=mysql_query("SELECT
 	a.perangkat,
 	
 	b.tanggal_perawatan,
-	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat LIMIT 1 Order BY id desc) AS treated_by,
-    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND tahun = $tahun_rawat LIMIT 1) AS approve_by,
+	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat  Order BY id desc LIMIT 1) AS treated_by,
+    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND tahun = $tahun_rawat limit 1) AS approve_by,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Kamera' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Kejelasan Kamera' THEN 'true' END) AS item2,
     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi View Kamera Dilihat dari Monitor/Online' THEN 'true' END) AS item3
