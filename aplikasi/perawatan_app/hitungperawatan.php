@@ -33,7 +33,7 @@ if (!empty($_GET['perangkat'])) {
                     idpc, 
                     user, 
                     lokasi, 
-                    'PC' AS perangkat,
+                    model AS perangkat,
                     (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = pcaktif.idpc AND  YEAR(tanggal_perawatan) = $tahun ) AS hitung,
                     (SELECT tanggal_perawatan FROM perawatan WHERE perawatan.idpc = pcaktif.idpc AND  YEAR(tanggal_perawatan) = $tahun LIMIT 1) AS tanggal,
                     (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = pcaktif.idpc AND  tahun = $tahun LIMIT 1) AS keterangan,
