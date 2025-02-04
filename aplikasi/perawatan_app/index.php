@@ -22,30 +22,32 @@ $staffIT = $_SESSION['user'];
                     <div class="panel panel-danger">
                         <div class="panel-body">
                             <form method="GET" action="index.php">
-                                <div class="form-group" >
-                                    <b> Nama Bulan</b>        
-                                    <select class="form-control" name='bulan' required='required'>	 
+                            <div class="form-group">
+                                <b> Nama Bulan</b>        
+                                <select class="form-control" name='bulan' required='required'>	 
                                     <option> </option>
-                                            
-                                            <?	$ss = mysql_query("SELECT * FROM bulan  ");
-                                                if(mysql_num_rows($ss) > 0){
-                                            while($datass = mysql_fetch_array($ss)){
-                                                $id_bulan=$datass['id_bulan'];
-                                                $bulan=$datass['bulan'];
-                                                ?>
-                                            <option value="<? echo $id_bulan; ?>"> <? echo $bulan; ?>
-                                            </option>
-                                            
-                                            <?}}?>
-                                            
-                                    
-                                    </select> 
-                                </div>	
+                                    <?php
+                                    // Koneksi database (sesuaikan dengan konfigurasi)
+                                    $ss = mysql_query("SELECT * FROM bulan WHERE id_bulan BETWEEN '01' AND '12' ORDER BY id_bulan ASC");
+                                    if(mysql_num_rows($ss) > 0){
+                                        while($datass = mysql_fetch_array($ss)){
+                                            $id_bulan = $datass['id_bulan'];
+                                            $bulan = $datass['bulan'];
+                                            ?>
+                                            <option value="<?php echo $id_bulan; ?>"> <?php echo $bulan; ?> </option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </select> 
+                            </div>
+
 
                                 <div class="form-group" >
                                     <b> Tahun</b>        
                                     <select class="form-control" name="tahun" size="1" id="tahun">
                                         <?php
+                                        // for ($i = 2030; >= 2022; $i--)
                                         for ($i = date('Y'); $i >= 2022; $i--) {
                                         if($i<10){ $i="0".$i; }
                                         echo"<option value=".$i.">".$i."</option>";}
@@ -168,7 +170,7 @@ $staffIT = $_SESSION['user'];
     </div>
 
  
-
+    <!-- Modal untuk Detail -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -197,6 +199,44 @@ $staffIT = $_SESSION['user'];
                             <input type="text" class="form-control" name="lokasi" id="lokasi" disabled>
                         </div>
                         </hr>
+                            <!-- <div class="form-group">
+                            <label for="bulan">Bulan</label>
+                            <select class="form-control" name="bulan" id="bulanModul" required>
+                                <option value="">Pilih Bulan</option>
+                                <option value="01">Januari</option>
+                                <option value="02">Februari</option>
+                                <option value="03">Maret</option>
+                                <option value="04">April</option>
+                                <option value="05">Mei</option>
+                                <option value="06">Juni</option>
+                                <option value="07">Juli</option>
+                                <option value="08">Agustus</option>
+                                <option value="09">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div> -->
+
+                                                <div class="form-group">
+                            <label for="bulan">Bulan</label>
+                            <select class="form-control" name="bulan" id="bulanModul" required disabled>
+                                <option value="">Pilih Bulan</option>
+                                <?php
+                                $bulanArr = array(
+                                    "01" => "Januari", "02" => "Februari", "03" => "Maret", "04" => "April",
+                                    "05" => "Mei", "06" => "Juni", "07" => "Juli", "08" => "Agustus",
+                                    "09" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"
+                                );
+                                foreach ($bulanArr as $id => $nama) {
+                                    echo "<option value='$id'>$nama</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+
+
                         <div class="form-group">
                             <label for="editOrderDate">Jenis Perawatan</label><br>
                             <label><input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)" unchecked> Pilih Semua</label><br>
@@ -318,7 +358,7 @@ $staffIT = $_SESSION['user'];
             const tahun = document.querySelector("[name='tahun']").value;
             const namadivisi = document.querySelector("[name='namadivisi']").value;
             const perangkat = document.querySelector("[name='perangkat']").value;
-
+            console.log(bulan, tahun, namadivisi, perangkat); // Debugging
             // AJAX untuk memuat data dari search_orders.php
             $.ajax({
                 url: 'aplikasi/perawatan_app/cariperawatan.php',
@@ -410,7 +450,9 @@ $staffIT = $_SESSION['user'];
                 data: { 
                     idpc: data.idpc,
                     perangkat_id: perangkatValue,
-                    tahun : tahunValue },
+                    tahun : tahunValue,
+                     bulan: $("select[name='bulan']").val()
+                },
                 success: function(response) {
                     // Menampilkan data yang dikembalikan dalam modal
                     $('#modalCheckboxes').html(response);
@@ -432,7 +474,15 @@ $staffIT = $_SESSION['user'];
                         alert("Nama Perawat Tidak Ada, Silahkan Login Kembali");
                         return false; // Prevent form submission
                     }
+
+    //                 if (!bulan) {
+    //     alert("Bulan belum dipilih!");
+    //     return;
+    // }
+
+                
                 // Ambil data dari input lainnya
+                
                 const idpc = document.getElementById("idpc").value;
                 const user = document.getElementById("user").value;
                 const lokasi = document.getElementById("lokasi").value;
@@ -441,6 +491,9 @@ $staffIT = $_SESSION['user'];
                 const approve_by = document.getElementById("approve_by").value;
                 const treated_by = document.getElementById("treated_by").value;
                 const tahun = document.getElementById("tahun").value;
+                const bulan = document.getElementById("bulanModul").value;
+                //const bulan = "01";
+                console.log("Bulan yang dikirim:", bulan); // Debugging
                 console.log(selectedItems);
                 console.log(unselectedItems);
                 // Kirim data menggunakan AJAX
@@ -454,6 +507,7 @@ $staffIT = $_SESSION['user'];
                             lokasi: lokasi,
                             tipe_perawatan_id :tipe_perawatan_id,
                             tahun:tahun,
+                            bulan: bulan, // Tambahkan parameter bulan
                             keterangan:keterangan,
                             selected_items: selectedItems,
                             unselected_items : unselectedItems,
@@ -465,7 +519,7 @@ $staffIT = $_SESSION['user'];
                             //alert('Data berhasil disimpan!');
                             $('#editModal').modal('hide');// Tutup modal setelah menyimpan
                             loadData() ; 
-                            //refresh();
+                           // refresh();
                         },
                         error: function() {
                             alert('Gagal menyimpan data.');
@@ -585,6 +639,24 @@ $staffIT = $_SESSION['user'];
             });
         }
     
+        
+
+        $(document).ready(function() {
+    // Set nilai default bulan di modal berdasarkan bulan yang dipilih di filter utama
+    $("select[name='bulan']").on("change", function() {
+        let selectedBulan = $(this).val(); // Ambil nilai bulan dari filter utama
+        $("#bulanModul").val(selectedBulan); // Atur nilai dropdown di modal
+    });
+
+    // Saat modal dibuka, pastikan dropdown bulan tetap sesuai dengan filter utama
+    $("#editModal").on("show.bs.modal", function() {
+        let selectedBulan = $("select[name='bulan']").val();
+        $("#bulanModul").val(selectedBulan);
+    });
+});
+
+
+        
 
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

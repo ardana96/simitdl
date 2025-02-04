@@ -9,17 +9,33 @@ if (isset($_GET['perangkat_id'])) {
 
     $idpc = mysql_real_escape_string($_GET['idpc']);
     $tahun = mysql_real_escape_string($_GET['tahun']);
-
-    // var_dump($perangkat_id);
-    // var_dump($idpc);
-    // exit;
-
-    // Query untuk mendapatkan data berdasarkan perangkat_id
-    //$query = "SELECT * FROM tipe_perawatan_item WHERE tipe_perawatan_id = '$perangkat_id'";
     
-    $query = "SELECT id, nama_perawatan, (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = '$idpc'
+//     $query = "SELECT id, nama_perawatan, (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = '$idpc'
 
-AND  YEAR(tanggal_perawatan) = $tahun AND perawatan.tipe_perawatan_item_id = tipe_perawatan_item.id  AND perawatan.`tipe_perawatan_id` = $perangkat_id ) AS hitung FROM tipe_perawatan_item WHERE tipe_perawatan_id = $perangkat_id";
+// AND  YEAR(tanggal_perawatan) = $tahun AND perawatan.tipe_perawatan_item_id = tipe_perawatan_item.id  AND perawatan.`tipe_perawatan_id` = $perangkat_id ) AS hitung FROM tipe_perawatan_item WHERE tipe_perawatan_id = $perangkat_id";
+
+// Cek apakah perangkat adalah UPS atau Server (24 atau 25)
+if ($perangkat_id == 24 || $perangkat_id == 25) {
+    $query = "SELECT id, nama_perawatan, 
+        (SELECT COUNT(*) FROM perawatan 
+         WHERE perawatan.idpc = '$idpc'
+         AND tahun = $tahun 
+         AND perawatan.tipe_perawatan_item_id = tipe_perawatan_item.id  
+         AND perawatan.tipe_perawatan_id = $perangkat_id 
+        ) AS hitung 
+        FROM tipe_perawatan_item 
+        WHERE tipe_perawatan_id = $perangkat_id";
+} else {
+    $query = "SELECT id, nama_perawatan, 
+        (SELECT COUNT(*) FROM perawatan 
+         WHERE perawatan.idpc = '$idpc'
+         AND YEAR(tanggal_perawatan) = $tahun 
+         AND perawatan.tipe_perawatan_item_id = tipe_perawatan_item.id  
+         AND perawatan.tipe_perawatan_id = $perangkat_id 
+        ) AS hitung 
+        FROM tipe_perawatan_item 
+        WHERE tipe_perawatan_id = $perangkat_id";
+}
 
 
     $result = mysql_query($query);
