@@ -41,6 +41,42 @@ function handleResponse() {
 		document.getElementById('sn').value = string[13];
 	}
 }
+
+// Fungsi untuk mengirim data ke Excel via POST
+function exportToExcel() {
+    // Ambil data dari tabel yang sudah difilter
+    var table = document.getElementById("dataTables-example");
+    var rows = table.getElementsByTagName("tr");
+
+    var tableData = [];
+
+    for (var i = 1; i < rows.length; i++) { // Mulai dari 1 agar header tabel tidak ikut
+        var cols = rows[i].getElementsByTagName("td");
+        if (cols.length > 0) { // Pastikan baris memiliki data
+            var rowData = [];
+            for (var j = 0; j < 6; j++) { // Hanya ambil 6 kolom pertama (Nomor, ID, Nama, Tipe, User, Divisi)
+                rowData.push(cols[j].innerText.trim());
+            }
+            tableData.push(rowData);
+        }
+    }
+
+    // Buat form untuk mengirim data sebagai POST
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = "aplikasi/export/excel_peripheral.php"; 
+
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "tableData";
+    input.value = JSON.stringify(tableData);
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}
+
+
 </script>
 
 
@@ -86,7 +122,13 @@ function kdauto($tabel, $inisial) {
 								<button class="btn btn-primary" data-toggle="modal" data-target="#newReg">
 									Tambah
 								</button>
+								<!-- // Export to Excel -->
+								<button class="btn btn-success" onclick="exportToExcel()">
+        							Export to Excel
+    							</button>
+
 							</div>
+
 							<div class="panel-body">
 								<div class="table-responsive" style='overflow: scroll;'>
 									<table class="table table-striped table-bordered table-hover" id="dataTables-example">

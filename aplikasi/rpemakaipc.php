@@ -27,8 +27,12 @@ $bulanQuery = mysql_query("SELECT id_bulan, bulan FROM bulan ORDER BY id_bulan A
                 <div class="panel-heading">
                     <a href="user.php?menu=inputpc">
                         <button class="btn btn-primary">Tambah PC</button>
+                        
                     </a>
                     <button class="btn btn-warning" id="toggleFilter">Filter</button>
+                    <button class="btn btn-success" onclick="exportToExcel()">
+        							Export to Excel
+    							</button>
                 </div>
 
                 <div class="panel-body">
@@ -320,4 +324,39 @@ $bulanQuery = mysql_query("SELECT id_bulan, bulan FROM bulan ORDER BY id_bulan A
         // Refresh page
         window.location.reload();
     });
+
+
+    // Fungsi untuk mengirim data ke Excel via POST
+function exportToExcel() {
+    // Ambil data dari tabel yang sudah difilter
+    var table = document.getElementById("dataTables-example");
+    var rows = table.getElementsByTagName("tr");
+
+    var tableData = [];
+
+    for (var i = 1; i < rows.length; i++) { // Mulai dari 1 agar header tabel tidak ikut
+        var cols = rows[i].getElementsByTagName("td");
+        if (cols.length > 0) { // Pastikan baris memiliki data
+            var rowData = [];
+            for (var j = 0; j < 14; j++) { // Hanya ambil 6 kolom pertama (Nomor, ID, Nama, Tipe, User, Divisi)
+                rowData.push(cols[j].innerText.trim());
+            }
+            tableData.push(rowData);
+        }
+    }
+
+    // Buat form untuk mengirim data sebagai POST
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = "aplikasi/export/excel_rperawatanpc.php"; 
+
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "tableData";
+    input.value = JSON.stringify(tableData);
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}
 </script>

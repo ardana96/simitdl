@@ -55,31 +55,44 @@ echo"<option value=".$i.">".$i."</option>";}
 <tr><td colspan="3" align="left"><img src="../img/pdf.png" style="width: 25px; height: 25px;"><input type="submit" name="simpan" value="PREVIEW PDF" ></tr> 
 </table>
 </form>
-<form action="../excel/ambil_excel.php"   method="POST" id="input_form">
-<table>
-<tr>
-<td colspan="3" align="center" class="judul">PENGAMBILAN BARANG EXCEL</td>
-</tr>
-<tr>
- <td>Bulan / tahun</td>
- <td> :</td>
- <td> <select name="bln_akhir" size="1" >
-<?php
-for($i=1;$i<=12;$i++){
-if($i<10){ $i="0".$i; }
-echo"<option value=".$i.">".$i."</option>";}
-?>    
-    </select>
-    <select name="thn_akhir" size="1" id="thn_akhir">
-<?php
-for($i=2013;$i<=date('Y');$i++){
-if($i<10){ $i="0".$i; }
-echo"<option value=".$i.">".$i."</option>";}
-?>    
-    </select></td>
-</tr>
-<tr><td colspan="3" align="left"><img src="../img/excel.ico" style="width: 25px; height: 25px;"><input type="submit" name="simpan" value="DOWNLOAD EXCEL" ></tr> 
-</table>
+<form action="../excel/ambil_excel.php" method="POST" id="input_form">
+    <table>
+        <tr>
+            <td colspan="3" align="center" class="judul">PENGAMBILAN BARANG EXCEL</td>
+        </tr>
+        <tr>
+            <td>Bulan / tahun</td>
+            <td> :</td>
+            <td>
+                <select name="bln_akhir" size="1">
+                    <?php
+                    for ($i = 1; $i <= 12; $i++) {
+                        if ($i < 10) {
+                            $i = "0" . $i;
+                        }
+                        echo "<option value=" . $i . ">" . $i . "</option>";
+                    }
+                    ?>
+                </select>
+                <select name="thn_akhir" size="1" id="thn_akhir">
+                    <?php
+                    for ($i = 2013; $i <= date('Y'); $i++) {
+                        if ($i < 10) {
+                            $i = "0" . $i;
+                        }
+                        echo "<option value=" . $i . ">" . $i . "</option>";
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" align="left">
+                <img src="../img/excel.ico" style="width: 25px; height: 25px;">
+                <input type="submit" name="simpan" value="DOWNLOAD EXCEL">
+            </td>
+        </tr>
+    </table>
 </form>
 </div>
 </body>
