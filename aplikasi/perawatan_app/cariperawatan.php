@@ -79,7 +79,7 @@ if (!empty($_GET['perangkat'])) {
 
     
         $query = "SELECT id_perangkat AS idpc, user, lokasi AS lokasi, tipe AS perangkat,
-                    (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = peripheral.id_perangkat AND  Ytahun = $tahun AND bulan = $bulan  ) AS hitung,
+                    (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = peripheral.id_perangkat AND  tahun = $tahun AND bulan = $bulan  ) AS hitung,
                     (SELECT tanggal_perawatan FROM perawatan WHERE perawatan.idpc = peripheral.id_perangkat AND bulan = $bulan AND  tahun = $tahun LIMIT 1)    AS tanggal,
                     (SELECT ket FROM ket_perawatan WHERE ket_perawatan.idpc = peripheral.id_perangkat AND bulan = $bulan  AND  tahun = $tahun LIMIT 1)   AS keterangan,
                     (SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = peripheral.id_perangkat AND bulan = $bulan  AND  tahun = $tahun  Order BY id desc LIMIT 1)  AS treated_by,
