@@ -30,22 +30,76 @@ $pdf->SetFont('Arial', '', 8);
 $pdf->SetWidths(array(7, 25, 20, 25, 42, 45, 20, 15, 20, 15, 15, 15, 15));
 $pdf->Header1($bulanGen);
 
-$query = "SELECT 
-    a.id_perangkat, a.user, a.divisi AS bagian, b.tipe_perawatan_id,
-    a.tgl_perawatan, a.lokasi, a.perangkat, b.tanggal_perawatan,
-    (SELECT treated_by FROM ket_perawatan WHERE idpc = a.id_perangkat AND tahun = '$tahun_rawat' ORDER BY id DESC LIMIT 1) AS treated_by,
-    (SELECT approve_by FROM ket_perawatan WHERE idpc = a.id_perangkat AND tahun = '$tahun_rawat' LIMIT 1) AS approve_by,
+// $query = "SELECT 
+//     a.id_perangkat, a.user, a.divisi AS bagian, b.tipe_perawatan_id,
+//     a.tgl_perawatan, a.lokasi, a.perangkat, b.tanggal_perawatan,
+//     (SELECT treated_by FROM ket_perawatan WHERE idpc = a.id_perangkat AND tahun = '$tahun_rawat' ORDER BY id DESC LIMIT 1) AS treated_by,
+//     (SELECT approve_by FROM ket_perawatan WHERE idpc = a.id_perangkat AND tahun = '$tahun_rawat' LIMIT 1) AS approve_by,
+//     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik UPS' THEN 'true' END) AS item1,
+//     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Baterai' THEN 'true' END) AS item2,
+//     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Lampu Indikator' THEN 'true' END) AS item3,
+//     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Alarm' THEN 'true' END) AS item4
+// FROM peripheral a
+// LEFT JOIN (SELECT * FROM perawatan WHERE YEAR(tanggal_perawatan) = '$tahun_rawat') AS b ON a.id_perangkat = b.idpc
+// LEFT JOIN tipe_perawatan_item d ON b.tipe_perawatan_item_id = d.id
+// WHERE LOWER(a.tipe) = 'ups' 
+// AND ('$bulan' = '' OR a.bulan LIKE '%$bulan%')
+// AND ('$pdivisi' = '' OR a.divisi LIKE '%$pdivisi%')
+// GROUP BY a.id_perangkat, a.user, b.tipe_perawatan_id";
+
+
+$query =
+"SELECT 
+    a.id_perangkat, 
+    a.user, 
+    a.divisi AS bagian, 
+    a.tgl_perawatan, 
+    a.lokasi, 
+    a.perangkat, 
+    COALESCE(b.tipe_perawatan_id, '-') AS tipe_perawatan_id, 
+    COALESCE(b.tanggal_perawatan, '-') AS tanggal_perawatan, 
+
+    (SELECT treated_by 
+     FROM ket_perawatan 
+     WHERE idpc = a.id_perangkat 
+     AND tahun = '$tahun_rawat'
+     AND bulan = '$bulan' 
+     ORDER BY id DESC 
+     LIMIT 1) AS treated_by,
+
+    (SELECT approve_by 
+     FROM ket_perawatan 
+     WHERE idpc = a.id_perangkat 
+     AND tahun = '$tahun_rawat' 
+     AND bulan = '$bulan'
+     LIMIT 1) AS approve_by,
+
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik UPS' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Baterai' THEN 'true' END) AS item2,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Lampu Indikator' THEN 'true' END) AS item3,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Alarm' THEN 'true' END) AS item4
+
 FROM peripheral a
-LEFT JOIN (SELECT * FROM perawatan WHERE YEAR(tanggal_perawatan) = '$tahun_rawat') AS b ON a.id_perangkat = b.idpc
-LEFT JOIN tipe_perawatan_item d ON b.tipe_perawatan_item_id = d.id
+
+-- Perbaikan agar semua perangkat tetap muncul
+LEFT JOIN (SELECT * FROM perawatan WHERE tahun = '$tahun_rawat' and bulan = '$bulan') AS b 
+    ON a.id_perangkat = b.idpc
+
+LEFT JOIN tipe_perawatan_item d 
+    ON b.tipe_perawatan_item_id = d.id
+
 WHERE LOWER(a.tipe) = 'ups' 
-AND ('$bulan' = '' OR a.bulan LIKE '%$bulan%')
+
+-- Perbaikan agar filter bulan tidak menghilangkan data
+AND a.bulan = '00'
+
+-- Filter divisi tetap fleksibel
 AND ('$pdivisi' = '' OR a.divisi LIKE '%$pdivisi%')
-GROUP BY a.id_perangkat, a.user, b.tipe_perawatan_id";
+
+-- Perbaikan di GROUP BY
+GROUP BY a.id_perangkat, a.user, a.divisi, a.tgl_perawatan, 
+         a.lokasi, a.perangkat, b.tipe_perawatan_id, b.tanggal_perawatan;
+";
 
 $sql = mysql_query($query);
 if (!$sql) {

@@ -96,45 +96,100 @@ $pdf->Header1($bulanGen);
 //$sql=mysql_query("Select * from peripheral where (bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (divisi LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') and tipe = 'server'  order by nomor ");
 //$sql=mysql_query("Select * from pcaktif2  where  divisi='".$pdivisi."'order by nomor ");
 
-$sql=mysql_query("SELECT 
+// $sql=mysql_query("SELECT 
     
-    a.id_perangkat ,
-    a.user,
-    a.divisi AS bagian,
-    b.tipe_perawatan_id,
-    a.`tgl_perawatan` AS tgl_perawatan,
-	a.lokasi,
-	a.perangkat,
+//     a.id_perangkat ,
+//     a.user,
+//     a.divisi AS bagian,
+//     b.tipe_perawatan_id,
+//     a.`tgl_perawatan` AS tgl_perawatan,
+// 	a.lokasi,
+// 	a.perangkat,
 	
-	b.tanggal_perawatan,
-	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat Order BY id desc) AS treated_by,
-    (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND tahun = $tahun_rawat) AS approve_by,
-    MAX(CASE WHEN d.nama_perawatan = 'Kondisi OS' THEN 'true' END) AS item1,
-    MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Fisik Server' THEN 'true' END) AS item2,
-    MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Apps' THEN 'true' END) AS item3,
-	MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi CPU' THEN 'true' END) AS item4
+// 	b.tanggal_perawatan,
+// 	(SELECT treated_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND  tahun = $tahun_rawat Order BY id desc) AS treated_by,
+//     (SELECT approve_by FROM ket_perawatan WHERE ket_perawatan.idpc = a.id_perangkat AND tahun = $tahun_rawat) AS approve_by,
+//     MAX(CASE WHEN d.nama_perawatan = 'Kondisi OS' THEN 'true' END) AS item1,
+//     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Fisik Server' THEN 'true' END) AS item2,
+//     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Apps' THEN 'true' END) AS item3,
+// 	MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi CPU' THEN 'true' END) AS item4
 
-FROM 
-    peripheral a
-LEFT JOIN 
+// FROM 
+//     peripheral a
+// LEFT JOIN 
     
 
-	(SELECT * FROM perawatan WHERE YEAR(tanggal_perawatan) = '".$tahun_rawat."'  ) AS b ON a.id_perangkat = b.idpc
+// 	(SELECT * FROM perawatan WHERE YEAR(tanggal_perawatan) = '".$tahun_rawat."'  ) AS b ON a.id_perangkat = b.idpc
 
-LEFT JOIN  
- 	tipe_perawatan_item d ON b.`tipe_perawatan_item_id` = d.`id`
+// LEFT JOIN  
+//  	tipe_perawatan_item d ON b.`tipe_perawatan_item_id` = d.`id`
+// WHERE LOWER(a.tipe) = 'server' 
+// AND
+// (a.bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (a.divisi LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') 
+
+
+
+// GROUP BY 
+//     a.id_perangkat, a.user, b.tipe_perawatan_id
+
+
+
+// ");
+
+
+$sql=mysql_query("SELECT 
+    a.id_perangkat, 
+    a.user, 
+    a.divisi AS bagian, 
+    a.tgl_perawatan, 
+    a.lokasi, 
+    a.perangkat, 
+    COALESCE(b.tipe_perawatan_id, '-') AS tipe_perawatan_id, 
+    COALESCE(b.tanggal_perawatan, '-') AS tanggal_perawatan, 
+
+    (SELECT treated_by 
+     FROM ket_perawatan 
+     WHERE idpc = a.id_perangkat 
+     AND tahun = '$tahun_rawat'
+     AND bulan = '$bulan' 
+     ORDER BY id DESC 
+     LIMIT 1) AS treated_by,
+
+    (SELECT approve_by 
+     FROM ket_perawatan 
+     WHERE idpc = a.id_perangkat 
+     AND tahun = '$tahun_rawat' 
+     AND bulan = '$bulan'
+     LIMIT 1) AS approve_by,
+
+	MAX(CASE WHEN d.nama_perawatan = 'Kondisi OS' THEN 'true' END) AS item1,
+    MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Fisik Server' THEN 'true' END) AS item2,
+	MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Apps' THEN 'true' END) AS item3,
+ 	MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi CPU' THEN 'true' END) AS item4
+
+FROM peripheral a
+
+-- Perbaikan agar semua perangkat tetap muncul
+LEFT JOIN (SELECT * FROM perawatan WHERE tahun = '$tahun_rawat' AND bulan = '$bulan') AS b 
+    ON a.id_perangkat = b.idpc
+
+LEFT JOIN tipe_perawatan_item d 
+    ON b.tipe_perawatan_item_id = d.id
+
 WHERE LOWER(a.tipe) = 'server' 
-AND
-(a.bulan LIKE '%".$bulan."%' OR '".$bulan."' = '') AND (a.divisi LIKE '%".$pdivisi."%' OR '".$pdivisi."' = '') 
 
+-- Perbaikan agar filter bulan tidak menghilangkan data
+AND a.bulan = '00'
 
+-- Filter divisi tetap fleksibel
+AND ('$pdivisi' = '' OR a.divisi LIKE '%$pdivisi%')
 
-GROUP BY 
-    a.id_perangkat, a.user, b.tipe_perawatan_id
-
-
-
+-- Perbaikan di GROUP BY
+GROUP BY a.id_perangkat, a.user, a.divisi, a.tgl_perawatan, 
+         a.lokasi, a.perangkat, b.tipe_perawatan_id, b.tanggal_perawatan;
 ");
+
+
 $count=mysql_num_rows($sql);
 $no=1;
 for($i=0;$i<$count;$i++);{

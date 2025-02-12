@@ -9,6 +9,7 @@ if (isset($_GET['perangkat_id'])) {
 
     $idpc = mysql_real_escape_string($_GET['idpc']);
     $tahun = mysql_real_escape_string($_GET['tahun']);
+    $bulan = mysql_real_escape_string($_GET['bulan']);
     
 //     $query = "SELECT id, nama_perawatan, (SELECT COUNT(*) FROM perawatan WHERE perawatan.idpc = '$idpc'
 
@@ -19,7 +20,8 @@ if ($perangkat_id == 24 || $perangkat_id == 25) {
     $query = "SELECT id, nama_perawatan, 
         (SELECT COUNT(*) FROM perawatan 
          WHERE perawatan.idpc = '$idpc'
-         AND tahun = $tahun 
+         AND tahun = $tahun
+         AND bulan = $bulan 
          AND perawatan.tipe_perawatan_item_id = tipe_perawatan_item.id  
          AND perawatan.tipe_perawatan_id = $perangkat_id 
         ) AS hitung 
