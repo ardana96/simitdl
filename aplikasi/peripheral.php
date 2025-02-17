@@ -1,85 +1,4 @@
 <?php include('config.php'); ?>  
-<script language="javascript">
-function createRequestObject() {
-	var ajax;
-	if (navigator.appName == 'Microsoft Internet Explorer') {
-		ajax = new ActiveXObject('Msxml2.XMLHTTP');
-	} else {
-		ajax = new XMLHttpRequest();
-	}
-	return ajax;
-}
-
-var http = createRequestObject();
-
-function sendRequest(nomor) {
-	if (nomor == "") {
-		alert("Anda belum memilih Printer !");
-	} else {
-		http.open('GET', 'aplikasi/filterPeripheral.php?nomor=' + encodeURIComponent(nomor), true);
-		http.onreadystatechange = handleResponse;
-		http.send(null);
-	}
-}
-
-function handleResponse() {
-	if (http.readyState == 4) {
-		var string = http.responseText.split('&&&');
-		document.getElementById('nomor').value = string[0];
-		document.getElementById('id_perangkat').value = string[1];
-		document.getElementById('perangkat').value = string[2];
-		document.getElementById('keterangan').value = string[3];
-		document.getElementById('divisi').value = string[4];
-		document.getElementById('user').value = string[5];
-		document.getElementById('lokasi').value = string[6];
-		document.getElementById('tgl_perawatan').value = string[7];
-		document.getElementById('bulan').value = string[8];
-		document.getElementById('tipe').value = string[9];
-		document.getElementById('brand').value = string[10];
-		document.getElementById('model').value = string[11];
-		document.getElementById('pembelian_dari').value = string[12];
-		document.getElementById('sn').value = string[13];
-	}
-}
-
-// Fungsi untuk mengirim data ke Excel via POST
-function exportToExcel() {
-    // Ambil data dari tabel yang sudah difilter
-    var table = document.getElementById("dataTables-example");
-    var rows = table.getElementsByTagName("tr");
-
-    var tableData = [];
-
-    for (var i = 1; i < rows.length; i++) { // Mulai dari 1 agar header tabel tidak ikut
-        var cols = rows[i].getElementsByTagName("td");
-        if (cols.length > 0) { // Pastikan baris memiliki data
-            var rowData = [];
-            for (var j = 0; j < 6; j++) { // Hanya ambil 6 kolom pertama (Nomor, ID, Nama, Tipe, User, Divisi)
-                rowData.push(cols[j].innerText.trim());
-            }
-            tableData.push(rowData);
-        }
-    }
-
-    // Buat form untuk mengirim data sebagai POST
-    var form = document.createElement("form");
-    form.method = "POST";
-    form.action = "aplikasi/export/excel_peripheral.php"; 
-
-    var input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "tableData";
-    input.value = JSON.stringify(tableData);
-
-    form.appendChild(input);
-    document.body.appendChild(form);
-    form.submit();
-}
-
-
-</script>
-
-
 <?
 function kdauto($tabel, $inisial) {
 	$struktur = mysql_query("SELECT * FROM $tabel");
@@ -122,14 +41,115 @@ function kdauto($tabel, $inisial) {
 								<button class="btn btn-primary" data-toggle="modal" data-target="#newReg">
 									Tambah
 								</button>
-								<!-- // Export to Excel -->
-								<button class="btn btn-success" onclick="exportToExcel()">
-        							Export to Excel
-    							</button>
+								  <!-- Tombol Filter -->
+    							<button type="button" class="btn btn-warning" onclick="toggleFilter()">Filter</button>
+								
 
 							</div>
 
 							<div class="panel-body">
+								<!-- Form Filter (disembunyikan default) -->
+								<div class="filter-container" id="filterContainer" style="margin-bottom: 20px; display: none;">
+									<form id="filterForm" method="GET">
+										<div class="row">
+											<!-- Nama Perangkat -->
+												<div class="col-md-2">
+													<label for="perangkat">Nama Perangkat</label>
+													<select id="perangkat" name="perangkat" class="form-control">
+														<option value="">-- Pilih Nama Perangkat --</option>
+														<?php
+														// Ambil data perangkat yang unik dari tabel peripheral
+														$queryPerangkat = mysql_query("SELECT DISTINCT perangkat FROM peripheral ORDER BY perangkat ASC");
+														while ($row = mysql_fetch_assoc($queryPerangkat)) {
+															$selected = isset($_GET['perangkat']) && $_GET['perangkat'] == $row['perangkat'] ? 'selected' : '';
+															echo "<option value='" . $row['perangkat'] . "' $selected>" .strtoupper($row['perangkat']) . "</option>";
+														}
+														?>
+													</select>
+												</div>
+											<!-- Tipe Perangkat -->
+											<div class="col-md-2">
+												<label for="tipe">Tipe</label>
+												<select id="tipe" name="tipe" class="form-control">
+													<option value="">-- Pilih Tipe --</option>
+													<?php
+													// Ambil data tipe perangkat yang unik dari tabel peripheral
+													$queryTipe = mysql_query("SELECT DISTINCT tipe FROM peripheral ORDER BY tipe ASC");
+													while ($row = mysql_fetch_assoc($queryTipe)) {
+														$selected = isset($_GET['tipe']) && $_GET['tipe'] == $row['tipe'] ? 'selected' : '';
+														echo "<option value='" . $row['tipe'] . "' $selected>" . strtoupper($row['tipe']) . "</option>";
+													}
+													?>
+												</select>
+											</div>
+											<!-- User -->
+											<div class="col-md-2">
+												<label for="user">User</label>
+												<select id="user" name="user" class="form-control">
+													<option value="">-- Pilih User --</option>
+													<?php
+													// Ambil data user yang unik dari tabel peripheral
+													$queryUser = mysql_query("SELECT DISTINCT user FROM peripheral ORDER BY user ASC");
+													while ($row = mysql_fetch_assoc($queryUser)) {
+														$selected = isset($_GET['user']) && $_GET['user'] == $row['user'] ? 'selected' : '';
+														echo "<option value='" . $row['user'] . "' $selected>" . strtoupper($row['user']) . "</option>";
+													}
+													?>
+												</select>
+											</div>
+
+											<!-- Bulan -->
+											<div class="col-md-2">
+												<label for="bulan">Bulan</label>
+												<select id="bulan" name="bulan" class="form-control">
+													<option value="">-- Pilih Bulan --</option>
+													<?php
+													$bulanList = array(
+														'00' => 'All Bulan',
+														'01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
+														'05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
+														'09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+													);
+
+													foreach ($bulanList as $key => $value) {
+														$selected = isset($_GET['bulan']) && $_GET['bulan'] == $key ? 'selected' : '';
+														echo "<option value='$key' $selected>$value</option>";
+													}
+													?>
+												</select>
+											</div>
+
+											<!-- Divisi -->
+												<div class="col-md-2">
+													<label for="divisi">Divisi</label>
+													<select id="divisi" name="divisi" class="form-control">
+														<option value="">-- Pilih Divisi --</option>
+														<?php
+														// Ambil data divisi yang unik dari tabel peripheral
+														$queryDivisi = mysql_query("SELECT DISTINCT divisi FROM peripheral ORDER BY divisi ASC");
+														while ($row = mysql_fetch_assoc($queryDivisi)) {
+															$selected = isset($_GET['divisi']) && $_GET['divisi'] == $row['divisi'] ? 'selected' : '';
+															echo "<option value='" . $row['divisi'] . "' $selected>" . strtoupper($row['divisi']) . "</option>";
+														}
+														?>
+													</select>
+												</div>
+
+										</div>
+
+										<!-- Tombol Action -->
+										<div class="row" style="margin-top: 10px;">
+											<div class="col-md-12 text-right">
+												<!-- // Export to Excel -->
+												<button type="button" class="btn btn-success" onclick="exportToExcelV2()"> Export to Excel</button>
+												<button type="submit" class="btn btn-primary">Cari</button>
+												<button type="button" id="clearFilter" class="btn btn-secondary" style="background-color: #6c757d; border-color: #6c757d; color: #fff;"> Reset</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+
 								<div class="table-responsive" style='overflow: scroll;'>
 									<table class="table table-striped table-bordered table-hover" id="dataTables-example">
 										<thead>
@@ -393,3 +413,201 @@ function kdauto($tabel, $inisial) {
 			</div>
 		</div>
 	</div>
+
+
+
+
+
+	<script language="javascript">
+function createRequestObject() {
+	var ajax;
+	if (navigator.appName == 'Microsoft Internet Explorer') {
+		ajax = new ActiveXObject('Msxml2.XMLHTTP');
+	} else {
+		ajax = new XMLHttpRequest();
+	}
+	return ajax;
+}
+
+var http = createRequestObject();
+
+function sendRequest(nomor) {
+	if (nomor == "") {
+		alert("Anda belum memilih Printer !");
+	} else {
+		http.open('GET', 'aplikasi/filterPeripheral.php?nomor=' + encodeURIComponent(nomor), true);
+		http.onreadystatechange = handleResponse;
+		http.send(null);
+	}
+}
+
+function handleResponse() {
+	if (http.readyState == 4) {
+		var string = http.responseText.split('&&&');
+		document.getElementById('nomor').value = string[0];
+		document.getElementById('id_perangkat').value = string[1];
+		document.getElementById('perangkat').value = string[2];
+		document.getElementById('keterangan').value = string[3];
+		document.getElementById('divisi').value = string[4];
+		document.getElementById('user').value = string[5];
+		document.getElementById('lokasi').value = string[6];
+		document.getElementById('tgl_perawatan').value = string[7];
+		document.getElementById('bulan').value = string[8];
+		document.getElementById('tipe').value = string[9];
+		document.getElementById('brand').value = string[10];
+		document.getElementById('model').value = string[11];
+		document.getElementById('pembelian_dari').value = string[12];
+		document.getElementById('sn').value = string[13];
+	}
+}
+
+// Fungsi untuk mengirim data ke Excel via POST
+function exportToExcel() {
+    // Ambil data dari tabel yang sudah difilter
+    var table = document.getElementById("dataTables-example");
+    var rows = table.getElementsByTagName("tr");
+
+    var tableData = [];
+
+    for (var i = 1; i < rows.length; i++) { // Mulai dari 1 agar header tabel tidak ikut
+        var cols = rows[i].getElementsByTagName("td");
+        if (cols.length > 0) { // Pastikan baris memiliki data
+            var rowData = [];
+            for (var j = 0; j < 6; j++) { // Hanya ambil 6 kolom pertama (Nomor, ID, Nama, Tipe, User, Divisi)
+                rowData.push(cols[j].innerText.trim());
+            }
+            tableData.push(rowData);
+        }
+    }
+
+    // Buat form untuk mengirim data sebagai POST
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = "aplikasi/export/excel_peripheral.php"; 
+
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "tableData";
+    input.value = JSON.stringify(tableData);
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}
+
+
+function toggleFilter() {
+    var filterContainer = document.getElementById("filterContainer");
+    filterContainer.style.display = (filterContainer.style.display === "none") ? "block" : "none";
+}
+
+document.getElementById('filterForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Cegah reload halaman
+
+    // Ambil semua elemen input dalam form
+    const form = this;
+    const inputs = form.querySelectorAll('select, input');
+    let isValid = false;
+
+    // Periksa apakah ada salah satu input yang diisi
+    inputs.forEach(input => {
+        if (input.value.trim() !== '') {
+            isValid = true;
+        }
+    });
+
+    // Jika tidak ada input yang diisi, tampilkan peringatan dan hentikan proses submit
+    if (!isValid) {
+        alert('Form Filter harus diisi salah satunya'); // Peringatan untuk input kosong
+        return;
+    }
+
+    // Ambil nilai form sebagai objek
+    const formData = new FormData(this);
+    const filterData = {};
+    formData.forEach((value, key) => {
+        filterData[key] = value;
+    });
+
+    // Mapping bulan ID ke nama bulan
+    const bulanMapping = {
+		"00": "Semua Bulan",
+        "01": "Januari", "02": "Februari", "03": "Maret", "04": "April",
+        "05": "Mei", "06": "Juni", "07": "Juli", "08": "Agustus",
+        "09": "September", "10": "Oktober", "11": "November", "12": "Desember"
+    };
+
+    fetch('aplikasi/filter_peripheral.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filterData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        var table = $('#dataTables-example').DataTable(); // Ambil instance DataTables
+
+        table.clear().draw(); // Hapus semua data tanpa kehilangan pagination
+
+        data.forEach((item, index) => {
+            // Konversi ID bulan menjadi nama bulan
+            const namaBulan = bulanMapping[item.bulan] || "Tidak diketahui";
+
+            table.row.add([
+                item.nomor,
+                item.id_perangkat,
+                item.perangkat,
+                item.tipe,
+                item.user,
+                item.divisi,
+                // namaBulan, // Gunakan nama bulan yang sudah dikonversi
+                // item.tgl_perawatan,
+                `<button class="btn btn-primary" value='${item.nomor}' data-toggle="modal" data-target="#newReggg" onclick="sendRequest(this.value)">Edit</button>`,
+                `<form action="aplikasi/deleteperipheral.php" method="post">
+                    <input type="hidden" name="nomor" value="${item.nomor}" />
+                    <button name="tombol" class="btn btn-danger" type="submit" onclick="return confirm('Apakah anda yakin akan menghapus data ini?')">X</button>
+                </form>`
+            ]).draw(false); // Tambahkan tanpa mereset tabel
+        });
+
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('clearFilter').addEventListener('click', function () {
+        //console.log("Tombol Reset ditekan - Reload halaman");
+        window.location.reload(); // Ini akan merefresh halaman sepenuhnya
+    });
+});
+
+
+function exportToExcelV2() {
+    var formData = $("#filterForm").serialize();
+    var isFilterEmpty = formData === "" || formData.replace(/[^=]/g, "").length === formData.length;
+
+    console.log("Payload yang dikirim:", formData);
+    console.log("Apakah filter kosong?", isFilterEmpty);
+
+    $.ajax({
+        url: "manager/export_peripheral.php", // Panggil dari folder manager
+        type: "POST",
+        data: isFilterEmpty ? { all_data: true } : formData,
+        success: function(response) {
+            console.log("Response dari server:", response);
+            window.location.href = "excel/generate_excel_peripheral.php?file=" + response; // Arahkan ke folder excel
+        },
+        error: function(xhr, status, error) {
+            console.log("Error:", error);
+            console.log("Response Text:", xhr.responseText);
+            alert("Export gagal: " + error);
+        }
+    });
+}
+
+</script>

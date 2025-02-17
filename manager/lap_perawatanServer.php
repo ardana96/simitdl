@@ -137,11 +137,95 @@ $pdf->Header1($bulanGen);
 // ");
 
 
+// $sql=mysql_query("SELECT 
+//     a.id_perangkat, 
+//     a.user, 
+//     a.divisi AS bagian, 
+//     a.tgl_perawatan, 
+//     a.lokasi, 
+//     a.perangkat, 
+//     COALESCE(b.tipe_perawatan_id, '-') AS tipe_perawatan_id, 
+//     COALESCE(b.tanggal_perawatan, '-') AS tanggal_perawatan, 
+
+//     (SELECT treated_by 
+//      FROM ket_perawatan 
+//      WHERE idpc = a.id_perangkat 
+//      AND tahun = '$tahun_rawat'
+//      AND bulan = '$bulan' 
+//      ORDER BY id DESC 
+//      LIMIT 1) AS treated_by,
+
+//     (SELECT approve_by 
+//      FROM ket_perawatan 
+//      WHERE idpc = a.id_perangkat 
+//      AND tahun = '$tahun_rawat' 
+//      AND bulan = '$bulan'
+//      LIMIT 1) AS approve_by,
+
+// 	MAX(CASE WHEN d.nama_perawatan = 'Kondisi OS' THEN 'true' END) AS item1,
+//     MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Fisik Server' THEN 'true' END) AS item2,
+// 	MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Apps' THEN 'true' END) AS item3,
+//  	MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi CPU' THEN 'true' END) AS item4
+
+// FROM peripheral a
+
+// -- Perbaikan agar semua perangkat tetap muncul
+// LEFT JOIN (SELECT * FROM perawatan WHERE tahun = '$tahun_rawat' AND bulan = '$bulan') AS b 
+//     ON a.id_perangkat = b.idpc
+
+// LEFT JOIN tipe_perawatan_item d 
+//     ON b.tipe_perawatan_item_id = d.id
+
+// WHERE LOWER(a.tipe) = 'server' 
+
+// -- Perbaikan agar filter bulan tidak menghilangkan data
+// AND a.bulan = '00'
+
+// -- Filter divisi tetap fleksibel
+// AND ('$pdivisi' = '' OR a.divisi LIKE '%$pdivisi%')
+
+// -- Perbaikan di GROUP BY
+// GROUP BY a.id_perangkat, a.user, a.divisi, a.tgl_perawatan, 
+//          a.lokasi, a.perangkat, b.tipe_perawatan_id, b.tanggal_perawatan;
+// ");
+
+
 $sql=mysql_query("SELECT 
     a.id_perangkat, 
     a.user, 
     a.divisi AS bagian, 
-    a.tgl_perawatan, 
+
+    -- Modifikasi Tanggal Perawatan mengikuti realisasi bulan sebelumnya, kecuali untuk Januari
+    CASE 
+        -- Jika bulan ekspor Januari, gunakan tanggal perawatan dari tabel asli
+        WHEN '$bulan' = '01' 
+        THEN COALESCE(a.tgl_perawatan, b.tanggal_perawatan, '-') 
+
+        -- Jika ada realisasi bulan sebelumnya, gunakan tanggal yang sama tetapi ubah bulannya
+        WHEN (SELECT p.tanggal_perawatan 
+              FROM perawatan p
+              WHERE p.idpc = a.id_perangkat 
+              AND p.bulan = LPAD('$bulan' - 1, 2, '0')
+              AND p.tahun = '$tahun_rawat'
+              ORDER BY p.id DESC LIMIT 1) IS NOT NULL 
+        THEN DATE_FORMAT(
+            STR_TO_DATE(
+                CONCAT(
+                    (SELECT DAY(p.tanggal_perawatan) 
+                     FROM perawatan p
+                     WHERE p.idpc = a.id_perangkat 
+                     AND p.bulan = LPAD('$bulan' - 1, 2, '0')
+                     AND p.tahun = '$tahun_rawat'
+                     ORDER BY p.id DESC LIMIT 1), 
+                    '-$bulan-$tahun_rawat'
+                ), '%d-%m-%Y'
+            ), '%Y-%m-%d')
+        ELSE '-' 
+    END AS tgl_perawatan,
+
+    -- Kolom Tgl Realisasi tetap tidak diubah
+    COALESCE(b.tanggal_perawatan, '-') AS tgl_realisasi,
+
     a.lokasi, 
     a.perangkat, 
     COALESCE(b.tipe_perawatan_id, '-') AS tipe_perawatan_id, 
@@ -162,33 +246,33 @@ $sql=mysql_query("SELECT
      AND bulan = '$bulan'
      LIMIT 1) AS approve_by,
 
-	MAX(CASE WHEN d.nama_perawatan = 'Kondisi OS' THEN 'true' END) AS item1,
-    MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Fisik Server' THEN 'true' END) AS item2,
-	MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi Apps' THEN 'true' END) AS item3,
- 	MAX(CASE WHEN d.`nama_perawatan` = 'Kondisi CPU' THEN 'true' END) AS item4
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik UPS' THEN 'true' END) AS item1,
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Baterai' THEN 'true' END) AS item2,
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Lampu Indikator' THEN 'true' END) AS item3,
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Alarm' THEN 'true' END) AS item4
 
 FROM peripheral a
 
--- Perbaikan agar semua perangkat tetap muncul
-LEFT JOIN (SELECT * FROM perawatan WHERE tahun = '$tahun_rawat' AND bulan = '$bulan') AS b 
-    ON a.id_perangkat = b.idpc
+-- Menggunakan LEFT JOIN untuk mengambil data perawatan terkait
+LEFT JOIN perawatan b 
+    ON a.id_perangkat = b.idpc 
+    AND b.tahun = '$tahun_rawat' 
+    AND b.bulan = '$bulan' 
 
 LEFT JOIN tipe_perawatan_item d 
     ON b.tipe_perawatan_item_id = d.id
 
 WHERE LOWER(a.tipe) = 'server' 
 
--- Perbaikan agar filter bulan tidak menghilangkan data
 AND a.bulan = '00'
 
 -- Filter divisi tetap fleksibel
 AND ('$pdivisi' = '' OR a.divisi LIKE '%$pdivisi%')
 
 -- Perbaikan di GROUP BY
-GROUP BY a.id_perangkat, a.user, a.divisi, a.tgl_perawatan, 
-         a.lokasi, a.perangkat, b.tipe_perawatan_id, b.tanggal_perawatan;
+GROUP BY a.id_perangkat, a.user, a.divisi, tgl_perawatan, 
+         a.lokasi, a.perangkat, b.tipe_perawatan_id, b.tanggal_perawatan, b.tanggal_perawatan;
 ");
-
 
 $count=mysql_num_rows($sql);
 $no=1;

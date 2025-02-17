@@ -30,9 +30,7 @@ $bulanQuery = mysql_query("SELECT id_bulan, bulan FROM bulan ORDER BY id_bulan A
                         
                     </a>
                     <button class="btn btn-warning" id="toggleFilter">Filter</button>
-                    <button class="btn btn-success" onclick="exportToExcel()">
-        							Export to Excel
-    							</button>
+                    
                 </div>
 
                 <div class="panel-body">
@@ -105,6 +103,7 @@ $bulanQuery = mysql_query("SELECT id_bulan, bulan FROM bulan ORDER BY id_bulan A
                             </div>
                             <div class="row" style="margin-top: 10px;">
                                 <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-success" onclick="exportToExcelV2()"> Export to Excel </button>
                                 <!-- Tombol Cari -->
                                     <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;">Cari</button>
                                 <!-- Tombol Bersihkan -->
@@ -326,37 +325,61 @@ $bulanQuery = mysql_query("SELECT id_bulan, bulan FROM bulan ORDER BY id_bulan A
     });
 
 
-    // Fungsi untuk mengirim data ke Excel via POST
-function exportToExcel() {
-    // Ambil data dari tabel yang sudah difilter
-    var table = document.getElementById("dataTables-example");
-    var rows = table.getElementsByTagName("tr");
+//     // Fungsi untuk mengirim data ke Excel via POST
+// function exportToExcel() {
+//     // Ambil data dari tabel yang sudah difilter
+//     var table = document.getElementById("dataTables-example");
+//     var rows = table.getElementsByTagName("tr");
 
-    var tableData = [];
+//     var tableData = [];
 
-    for (var i = 1; i < rows.length; i++) { // Mulai dari 1 agar header tabel tidak ikut
-        var cols = rows[i].getElementsByTagName("td");
-        if (cols.length > 0) { // Pastikan baris memiliki data
-            var rowData = [];
-            for (var j = 0; j < 14; j++) { // Hanya ambil 6 kolom pertama (Nomor, ID, Nama, Tipe, User, Divisi)
-                rowData.push(cols[j].innerText.trim());
-            }
-            tableData.push(rowData);
+//     for (var i = 1; i < rows.length; i++) { // Mulai dari 1 agar header tabel tidak ikut
+//         var cols = rows[i].getElementsByTagName("td");
+//         if (cols.length > 0) { // Pastikan baris memiliki data
+//             var rowData = [];
+//             for (var j = 0; j < 14; j++) { // Hanya ambil 6 kolom pertama (Nomor, ID, Nama, Tipe, User, Divisi)
+//                 rowData.push(cols[j].innerText.trim());
+//             }
+//             tableData.push(rowData);
+//         }
+//     }
+
+//     // Buat form untuk mengirim data sebagai POST
+//     var form = document.createElement("form");
+//     form.method = "POST";
+//     form.action = "aplikasi/export/excel_rperawatanpc.php"; 
+
+//     var input = document.createElement("input");
+//     input.type = "hidden";
+//     input.name = "tableData";
+//     input.value = JSON.stringify(tableData);
+
+//     form.appendChild(input);
+//     document.body.appendChild(form);
+//     form.submit();
+// }
+
+function exportToExcelV2() {
+    var formData = $("#filterForm").serialize();
+    var isFilterEmpty = formData === "" || formData.replace(/[^=]/g, "").length === formData.length;
+
+    console.log("Payload yang dikirim:", formData);
+    console.log("Apakah filter kosong?", isFilterEmpty);
+
+    $.ajax({
+        url: "manager/export_rpemakaipc.php", // Panggil dari folder manager
+        type: "POST",
+        data: isFilterEmpty ? { all_data: true } : formData,
+        success: function(response) {
+            console.log("Response dari server:", response);
+            window.location.href = "excel/generate_excel_rpemakaipc.php?file=" + response; // Arahkan ke folder excel
+        },
+        error: function(xhr, status, error) {
+            console.log("Error:", error);
+            console.log("Response Text:", xhr.responseText);
+            alert("Export gagal: " + error);
         }
-    }
-
-    // Buat form untuk mengirim data sebagai POST
-    var form = document.createElement("form");
-    form.method = "POST";
-    form.action = "aplikasi/export/excel_rperawatanpc.php"; 
-
-    var input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "tableData";
-    input.value = JSON.stringify(tableData);
-
-    form.appendChild(input);
-    document.body.appendChild(form);
-    form.submit();
+    });
 }
+
 </script>
