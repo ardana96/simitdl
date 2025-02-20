@@ -326,9 +326,10 @@ function kdauto($tabel, $inisial) {
 								ID Perangkat
 								<input class="form-control" type="text" name="id_perangkat" id="id_perangkat">
 							</div>
+							
 							<div class="form-group">
 								Perangkat
-								<input class="form-control" type="text" name="perangkat" id="perangkat" placeholder="ID Perangkat">
+								<input class="form-control" type="text" name="perangkat" id="perangkat1">
 							</div>
 							<div class="form-group">
 								Tipe
@@ -446,7 +447,7 @@ function handleResponse() {
 		var string = http.responseText.split('&&&');
 		document.getElementById('nomor').value = string[0];
 		document.getElementById('id_perangkat').value = string[1];
-		document.getElementById('perangkat').value = string[2];
+		document.getElementById('perangkat1').value = string[2];
 		document.getElementById('keterangan').value = string[3];
 		document.getElementById('divisi').value = string[4];
 		document.getElementById('user').value = string[5];

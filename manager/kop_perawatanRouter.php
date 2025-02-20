@@ -96,14 +96,14 @@ $this->setY(45);
 $this->setX(184);
 $this->CELL(20,9,'Switch / Router','B',0,'C');
 $this->CELL(22,9,'Power dan Link','LB',0,'C');
-$this->CELL(18,9,'Switch','LB',0,'C');
+$this->CELL(18,9,'Unmanageable ssSwitch','LB',0,'C');
 
 
 $this->setY(42);
 $this->setX(184);
 $this->CELL(20,6,'Kondisi Fisik ','T',0,'C');
 $this->CELL(22,6,'Lampu Indikator','LR',0,'C');
-$this->CELL(18,6,'Manageable','LR',0,'C');
+$this->CELL(18,6,'Manageable / ','LR',0,'C');
 
 $this->CELL(15,12,'Petugas',1,0,'C');
 $this->CELL(15,12,'User',1,1,'C');
