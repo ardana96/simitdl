@@ -329,11 +329,11 @@ function kdauto($tabel, $inisial) {
 							
 							<div class="form-group">
 								Perangkat
-								<input class="form-control" type="text" name="perangkat" id="perangkat1">
+								<input class="form-control" type="text" name="perangkat" id="perangkatEdit">
 							</div>
 							<div class="form-group">
 								Tipe
-								<select class="form-control" name="tipe" id="tipe" required="required">
+								<select class="form-control" name="tipe" id="tipeEdit" required="required">
 									<option value="Switch/Router">Switch / Router</option>
 									<option value="kabel jaringan">Kabel Jaringan</option>
 									<option value="server">Server</option>
@@ -364,7 +364,7 @@ function kdauto($tabel, $inisial) {
 							</div>
 							<div class="form-group">
 								Nama User
-								<input class="form-control" type="text" name="user" id="user" placeholder="Nama User">
+								<input class="form-control" type="text" name="user" id="userEdit" placeholder="Nama User">
 							</div>
 							<div class="form-group">
 								Lokasi
@@ -372,15 +372,15 @@ function kdauto($tabel, $inisial) {
 							</div>
 							<div class="form-group">
 								Keterangan
-								<input class="form-control" type="text" name="keterangan" id="keterangan" placeholder="Keterangan">
+								<input class="form-control" type="text" name="keterangan" id="keteranganEdit" placeholder="keterangan">
 							</div>
 							<div class="form-group">
 								Tanggal Perawatan
-								<input class="form-control" type="date" name="tgl_perawatan" id="tgl_perawatan">
+								<input class="form-control" type="date" name="tgl_perawatan" id="tgl_perawatanEdit">
 							</div>
 							<div class="form-group">
 								Bulan Perawatan
-								<select class="form-control" name="bulan" id="bulan" required="required">
+								<select class="form-control" name="bulan" id="bulanEdit" required="required">
 									<option value=""></option>
 									<option value="01">JANUARI</option>
 									<option value="02">FEBRUARI</option>
@@ -447,14 +447,14 @@ function handleResponse() {
 		var string = http.responseText.split('&&&');
 		document.getElementById('nomor').value = string[0];
 		document.getElementById('id_perangkat').value = string[1];
-		document.getElementById('perangkat1').value = string[2];
-		document.getElementById('keterangan').value = string[3];
+		document.getElementById('perangkatEdit').value = string[2];
+		document.getElementById('keteranganEdit').value = string[3];
 		document.getElementById('divisi').value = string[4];
-		document.getElementById('user').value = string[5];
+		document.getElementById('userEdit').value = string[5];
 		document.getElementById('lokasi').value = string[6];
-		document.getElementById('tgl_perawatan').value = string[7];
-		document.getElementById('bulan').value = string[8];
-		document.getElementById('tipe').value = string[9];
+		document.getElementById('tgl_perawatanEdit').value = string[7];
+		document.getElementById('bulanEdit').value = string[8];
+		document.getElementById('tipeEdit').value = string[9];
 		document.getElementById('brand').value = string[10];
 		document.getElementById('model').value = string[11];
 		document.getElementById('pembelian_dari').value = string[12];
