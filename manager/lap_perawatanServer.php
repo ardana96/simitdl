@@ -190,7 +190,7 @@ $pdf->Header1($bulanGen);
 // ");
 
 
-$sql=mysql_query("SELECT 
+$sql = mysql_query("SELECT 
     a.id_perangkat, 
     a.user, 
     a.divisi AS bagian, 
@@ -200,7 +200,6 @@ $sql=mysql_query("SELECT
         -- Jika bulan ekspor Januari, gunakan tanggal perawatan dari tabel asli
         WHEN '$bulan' = '01' 
         THEN COALESCE(a.tgl_perawatan, b.tanggal_perawatan, '-') 
-
         -- Jika ada realisasi bulan sebelumnya, gunakan tanggal yang sama tetapi ubah bulannya
         WHEN (SELECT p.tanggal_perawatan 
               FROM perawatan p
@@ -231,6 +230,7 @@ $sql=mysql_query("SELECT
     COALESCE(b.tipe_perawatan_id, '-') AS tipe_perawatan_id, 
     COALESCE(b.tanggal_perawatan, '-') AS tanggal_perawatan, 
 
+    -- Kolom dari ket_perawatan
     (SELECT treated_by 
      FROM ket_perawatan 
      WHERE idpc = a.id_perangkat 
@@ -244,12 +244,22 @@ $sql=mysql_query("SELECT
      WHERE idpc = a.id_perangkat 
      AND tahun = '$tahun_rawat' 
      AND bulan = '$bulan'
+     ORDER BY id DESC 
      LIMIT 1) AS approve_by,
 
-    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik UPS' THEN 'true' END) AS item1,
-    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Baterai' THEN 'true' END) AS item2,
-    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Lampu Indikator' THEN 'true' END) AS item3,
-    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Alarm' THEN 'true' END) AS item4
+    (SELECT ket 
+     FROM ket_perawatan 
+     WHERE idpc = a.id_perangkat 
+     AND tahun = '$tahun_rawat'
+     AND bulan = '$bulan' 
+     ORDER BY id DESC 
+     LIMIT 1) AS ket,  -- Ganti 'keterangan' menjadi 'ket'
+
+    -- Kolom item perawatan
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi OS' THEN 'true' END) AS item1,
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik Server' THEN 'true' END) AS item2,
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi Apps' THEN 'true' END) AS item3,
+    MAX(CASE WHEN d.nama_perawatan = 'Kondisi CPU' THEN 'true' END) AS item4
 
 FROM peripheral a
 
@@ -263,17 +273,21 @@ LEFT JOIN tipe_perawatan_item d
     ON b.tipe_perawatan_item_id = d.id
 
 WHERE LOWER(a.tipe) = 'server' 
-
 AND a.bulan = '00'
-
 -- Filter divisi tetap fleksibel
 AND ('$pdivisi' = '' OR a.divisi LIKE '%$pdivisi%')
 
 -- Perbaikan di GROUP BY
-GROUP BY a.id_perangkat, a.user, a.divisi, tgl_perawatan, 
-         a.lokasi, a.perangkat, b.tipe_perawatan_id, b.tanggal_perawatan, b.tanggal_perawatan;
+GROUP BY 
+    a.id_perangkat, 
+    a.user, 
+    a.divisi, 
+    a.tgl_perawatan, 
+    a.lokasi, 
+    a.perangkat, 
+    b.tipe_perawatan_id, 
+    b.tanggal_perawatan
 ");
-
 $count=mysql_num_rows($sql);
 $no=1;
 for($i=0;$i<$count;$i++);{
@@ -282,7 +296,8 @@ while ($database = mysql_fetch_array($sql)) {
 	$tgl_perawatan=$database['tgl_perawatan'];
 	$tanggal_realisasi = $database['tanggal_perawatan'];
 	$user=$database['user'];
-	$keterangan=$database['keterangan'];
+	// $keterangan=$database['keterangan'];
+	$ket=$database['ket'];
 	
 	$bagian = $database['bagian'];
 	$lokasi= $database['lokasi'];
@@ -310,7 +325,7 @@ while($dat=mysql_fetch_array($b)){
 
 $data = array(
 	//array($no++, $bagianbesar, $tgl_jadwal2, '', $id, $namapc.'/'.$user, $item1, $item2, $item3, $item4, $item5, $item6, $item7, '', '', ''),
-	array($no++, $lokasi,$tgl_perawatan,$tanggal_realisasi ,$id_perangkat,$perangkat.' / '.$user,$item1, $item2, $item3, $item4, $treated_by , $approve_by,'')
+	array($no++, $lokasi,$tgl_perawatan,$tanggal_realisasi ,$id_perangkat,$perangkat.' / '.$user,$item1, $item2, $item3, $item4, $treated_by , $approve_by, $ket,'')
 	//array($no++, $lokasi,$tgl_perawatan,'',$id_perangkat,$perangkat.' / '.$user,'','','','','','')
 	
 	
