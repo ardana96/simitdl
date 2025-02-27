@@ -158,6 +158,14 @@ $query =
      AND bulan = '$bulan'
      LIMIT 1) AS approve_by,
 
+    (SELECT ket 
+     FROM ket_perawatan 
+     WHERE idpc = a.id_perangkat 
+     AND tahun = '$tahun_rawat'
+     AND bulan = '$bulan' 
+     ORDER BY id DESC 
+     LIMIT 1) AS ket,  -- Ganti 'keterangan' menjadi 'ket'
+
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Fisik UPS' THEN 'true' END) AS item1,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Baterai' THEN 'true' END) AS item2,
     MAX(CASE WHEN d.nama_perawatan = 'Kondisi Lampu Indikator' THEN 'true' END) AS item3,
@@ -199,7 +207,7 @@ while ($database = mysql_fetch_array($sql)) {
             $no++, $database['lokasi'], $database['tgl_perawatan'], $database['tanggal_perawatan'],
             $database['id_perangkat'], $database['perangkat'] . ' / ' . $database['user'],
             $database['item1'], $database['item2'], $database['item3'], $database['item4'],
-            $database['treated_by'], $database['approve_by'], ''
+            $database['treated_by'], $database['approve_by'], $database['ket'], ''
         )
     );
     foreach ($data as $row) {
